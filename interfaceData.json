@@ -66,12 +66,14 @@
                 "cmo": "M",
                 "rule": "The Scheme Version against which the message has been constructed | Notes: nnn"
             },
-            {
-                "id": "DI-999",
-                "name": "Event Code",
-                "cmo": "M",
-                "rule": "Code used to identify the nature of the Event | Notes: [InitialRegistration], [ChangeOfSupplier]"
-            },
+           {
+    "id": "DI-999",
+    "name": "Event Code",
+    "cmo": "M", 
+    "description": "Code used to identify the nature of the Event",
+    "population_notes": "[ConsentGranularity], [IHDInfo], [SMSO], [SSCandProfileClass]",
+    "rule": "Code used to identify the nature of the Event | Notes: [ConsentGranularity], [IHDInfo], [SMSO], [SSCandProfileClass]"
+}
             {
                 "isHeader": true,
                 "title": "S1 - Sender Info (Mandatory)"
