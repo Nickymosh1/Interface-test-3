@@ -520,23 +520,55 @@
                             Data Items
                         </h3>`;
 
-                if (item.data_items && item.data_items.length > 0) {
-                    dataItemsHtml += '<div class="overflow-y-auto overflow-x-auto max-h-[50vh]"><table class="w-full text-sm text-left">';
-                    item.data_items.forEach(di => {
-                        if (di.isHeader) {
-                            dataItemsHtml += `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]"><tr class="border-b"><th colspan="4" class="px-4 py-2 font-bold">${escapeHtml(di.title)}</th></tr></thead>`;
-                            dataItemsHtml += `<thead class="text-xs text-[var(--purple)] uppercase"><tr class="border-b"><th class="px-4 py-2">ID</th><th class="px-4 py-2">Data Item</th><th class="px-4 py-2">M/O/C</th><th class="px-4 py-2">Description / Rule</th></tr></thead>`;
-                        } else {
-                            dataItemsHtml += `<tbody class="divide-y"><tr class="hover:bg-gray-50">
-                                <td class="px-4 py-2 font-mono font-bold">${escapeHtml(di.id)}</td>
-                                <td class="px-4 py-2">${escapeHtml(di.name)}</td>
-                                <td class="px-4 py-2 font-semibold">${escapeHtml(di.cmo)}</td>
-                                <td class="px-4 py-2 text-xs opacity-80">${escapeHtml(di.rule)}</td>
-                            </tr></tbody>`;
-                        }
-                    });
-                    dataItemsHtml += '</table></div>';
+if (item.data_items && item.data_items.length > 0) {
+    dataItemsHtml += '<div class="overflow-y-auto overflow-x-auto max-h-[50vh]"><table class="w-full text-sm text-left">';
+    item.data_items.forEach(di => {
+        if (di.isHeader) {
+            // NEW: Updated colspan to 5 and new column headers
+            dataItemsHtml += `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]"><tr class="border-b"><th colspan="5" class="px-4 py-2 font-bold">${escapeHtml(di.title)}</th></tr></thead>`;
+            dataItemsHtml += `<thead class="text-xs text-[var(--purple)] uppercase"><tr class="border-b">
+                <th class="px-4 py-2">ID</th>
+                <th class="px-4 py-2">Data Item</th>
+                <th class="px-4 py-2">M/O/C</th>
+                <th class="px-4 py-2">Description</th>
+                <th class="px-4 py-2">Population Notes</th>
+            </tr></thead>`;
+        } else {
+            // NEW: Split the rule into description and population notes
+            let description = '';
+            let populationNotes = '';
+            
+            // Check if we have the new separated fields
+            if (di.description) {
+                description = di.description;
+                populationNotes = di.population_notes || '';
+            } else if (di.rule) {
+                // Fallback: try to split the existing rule field
+                if (di.rule.includes(' | Notes:')) {
+                    const parts = di.rule.split(' | Notes:');
+                    description = parts[0].trim();
+                    populationNotes = parts[1].trim();
                 } else {
+                    description = di.rule;
+                    populationNotes = '';
+                }
+            }
+            
+            dataItemsHtml += `<tbody class="divide-y"><tr class="hover:bg-gray-50">
+                <td class="px-4 py-2 font-mono font-bold text-blue-600">${escapeHtml(di.id)}</td>
+                <td class="px-4 py-2 font-medium">${escapeHtml(di.name)}</td>
+                <td class="px-4 py-2 font-semibold text-center">
+                    <span class="px-2 py-1 rounded text-xs ${di.cmo === 'M' ? 'bg-red-100 text-red-800' : di.cmo === 'C' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}">
+                        ${escapeHtml(di.cmo)}
+                    </span>
+                </td>
+                <td class="px-4 py-2 text-sm">${escapeHtml(description)}</td>
+                <td class="px-4 py-2 text-xs text-gray-600 italic">${escapeHtml(populationNotes)}</td>
+            </tr></tbody>`;
+        }
+    });
+    dataItemsHtml += '</table></div>';
+} else {
                     dataItemsHtml += '<p class="text-[var(--dark-purple)] opacity-70">No data items are associated with this interface.</p>';
                 }
                 dataItemsHtml += '</div>';
