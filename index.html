@@ -305,6 +305,7 @@
                         <button class="filter-btn border-0 text-[var(--purple)] bg-[var(--birch)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="all" aria-pressed="true">All Interfaces</button>
                         <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_send" aria-pressed="false" style="background: linear-gradient(135deg, #9254FF20, #9254FF10);">Supplier Send</button>
                         <button class="filter-btn border-0 text-[var(--dark-purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_receive" aria-pressed="false" style="background: linear-gradient(135deg, #FFDE0030, #FFDE0020);">Supplier Receive</button>
+                        <button class="filter-btn border-0 text-[var(--dark-purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_both" aria-pressed="false" style="background: linear-gradient(135deg, #1AE57030, #1AE57020);">Send & Receive</button>
                         <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="none" aria-pressed="false" style="background: linear-gradient(135deg, #e5e7eb, #f3f4f6);">Not Involved</button>
                     </div>
 
@@ -381,6 +382,7 @@
         // --- GLOBAL APP STATE ---
         let interfaceData = [];
         let dflowData = [];
+        let commonBlocks = {};
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -411,12 +413,91 @@
             });
         }
 
-        // --- INTERFACE EXPLORER LOGIC (RESTORED TO ORIGINAL) ---
+        // --- Helper function to process blocks and build data items ---
+        function processInterfaceBlocks(interfaceItem, commonBlocks) {
+            const dataItems = [];
+            
+            if (!interfaceItem.blocks) return dataItems;
+            
+            interfaceItem.blocks.forEach(block => {
+                let blockData = null;
+                let condition = '';
+                let repeatable = false;
+                
+                // Handle different block formats
+                if (typeof block === 'string') {
+                    // Simple block reference
+                    blockData = commonBlocks[block];
+                } else if (typeof block === 'object' && block.ref) {
+                    // Block with conditions
+                    blockData = commonBlocks[block.ref];
+                    condition = block.condition || '';
+                    repeatable = block.repeatable || false;
+                }
+                
+                // Add block data if found
+                if (blockData) {
+                    // Add block header
+                    let headerTitle = blockData.title;
+                    if (condition) {
+                        headerTitle += ` (${condition})`;
+                    }
+                    if (repeatable) {
+                        headerTitle += ' [Repeatable]';
+                    }
+                    
+                    dataItems.push({
+                        isHeader: true,
+                        title: headerTitle
+                    });
+                    
+                    // Add block data items
+                    if (blockData.data_items) {
+                        blockData.data_items.forEach(item => {
+                            dataItems.push({
+                                id: item.id,
+                                name: item.name,
+                                cmo: item.cmo,
+                                rule: item.rule || '',
+                                isHeader: false
+                            });
+                        });
+                    }
+                } else if (typeof block === 'string' && !commonBlocks[block]) {
+                    // Block not found in common blocks - add as placeholder header
+                    dataItems.push({
+                        isHeader: true,
+                        title: `${block} - Block Definition Not Found`
+                    });
+                }
+            });
+            
+            return dataItems;
+        }
+
+        // --- INTERFACE EXPLORER LOGIC ---
         async function initializeInterfaceExplorer() {
             try {
                 const response = await fetch('interfaceData.json');
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                interfaceData = await response.json();
+                const rawData = await response.json();
+                
+                // Store common blocks
+                commonBlocks = rawData.common_blocks || {};
+                
+                // Process interfaces
+                interfaceData = rawData.interfaces.map(item => {
+                    // Build data_items from blocks
+                    const processedDataItems = processInterfaceBlocks(item, commonBlocks);
+                    
+                    return {
+                        ...item,
+                        data_items: processedDataItems,
+                        // Add a context field if not present
+                        context: item.context || `This interface handles ${item.name}. It facilitates communication between ${item.sender} and ${item.receiver}.`
+                    };
+                });
+                
             } catch (error) {
                 console.error("Could not load interface data:", error);
                 document.getElementById('interfaceList').innerHTML = `<p class="text-center text-red-600 p-4">Error: Could not load interface data.</p>`;
@@ -460,6 +541,11 @@
                             .map(di => `${di.id || ''} ${di.name || ''} ${di.rule || ''}`)
                             .join(' ');
                         searchableText += ` ${dataItemText.toLowerCase()}`;
+                    }
+
+                    // Add event codes to searchable text
+                    if (item.event_codes) {
+                        searchableText += ` ${item.event_codes.join(' ').toLowerCase()}`;
                     }
                     
                     return keywords.every(keyword => searchableText.includes(keyword));
@@ -520,135 +606,112 @@
                             Data Items
                         </h3>`;
 
-if (item.data_items && item.data_items.length > 0) {
-    dataItemsHtml += '<div class="overflow-y-auto overflow-x-auto max-h-[50vh]"><table class="w-full text-sm text-left">';
-    item.data_items.forEach(di => {
-        if (di.isHeader) {
-            // NEW: Updated colspan to 5 and new column headers
-            dataItemsHtml += `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]"><tr class="border-b"><th colspan="5" class="px-4 py-2 font-bold">${escapeHtml(di.title)}</th></tr></thead>`;
-            dataItemsHtml += `<thead class="text-xs text-[var(--purple)] uppercase"><tr class="border-b">
-                <th class="px-4 py-2">ID</th>
-                <th class="px-4 py-2">Data Item</th>
-                <th class="px-4 py-2">M/O/C</th>
-                <th class="px-4 py-2">Description</th>
-                <th class="px-4 py-2">Population Notes</th>
-            </tr></thead>`;
-        } else {
-            // NEW: Split the rule into description and population notes
-            let description = '';
-            let populationNotes = '';
-            
-            // Check if we have the new separated fields
-            if (di.description) {
-                description = di.description;
-                populationNotes = di.population_notes || '';
-            } else if (di.rule) {
-                // Fallback: try to split the existing rule field
-                if (di.rule.includes(' | Notes:')) {
-                    const parts = di.rule.split(' | Notes:');
-                    description = parts[0].trim();
-                    populationNotes = parts[1].trim();
+                if (item.data_items && item.data_items.length > 0) {
+                    dataItemsHtml += '<div class="overflow-y-auto overflow-x-auto max-h-[50vh]"><table class="w-full text-sm text-left">';
+                    item.data_items.forEach(di => {
+                        if (di.isHeader) {
+                            dataItemsHtml += `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]"><tr class="border-b"><th colspan="4" class="px-4 py-2 font-bold">${escapeHtml(di.title)}</th></tr></thead>`;
+                            dataItemsHtml += `<thead class="text-xs text-[var(--purple)] uppercase"><tr class="border-b">
+                                <th class="px-4 py-2">ID</th>
+                                <th class="px-4 py-2">Data Item</th>
+                                <th class="px-4 py-2">M/O/C</th>
+                                <th class="px-4 py-2">Rule / Description</th>
+                            </tr></thead>`;
+                        } else {
+                            dataItemsHtml += `<tbody class="divide-y"><tr class="hover:bg-gray-50">
+                                <td class="px-4 py-2 font-mono font-bold text-blue-600">${escapeHtml(di.id)}</td>
+                                <td class="px-4 py-2 font-medium">${escapeHtml(di.name)}</td>
+                                <td class="px-4 py-2 font-semibold text-center">
+                                    <span class="px-2 py-1 rounded text-xs ${di.cmo === 'M' ? 'bg-red-100 text-red-800' : di.cmo === 'C' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}">
+                                        ${escapeHtml(di.cmo)}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-2 text-sm">${escapeHtml(di.rule)}</td>
+                            </tr></tbody>`;
+                        }
+                    });
+                    dataItemsHtml += '</table></div>';
                 } else {
-                    description = di.rule;
-                    populationNotes = '';
-                }
-            }
-            
-            dataItemsHtml += `<tbody class="divide-y"><tr class="hover:bg-gray-50">
-                <td class="px-4 py-2 font-mono font-bold text-blue-600">${escapeHtml(di.id)}</td>
-                <td class="px-4 py-2 font-medium">${escapeHtml(di.name)}</td>
-                <td class="px-4 py-2 font-semibold text-center">
-                    <span class="px-2 py-1 rounded text-xs ${di.cmo === 'M' ? 'bg-red-100 text-red-800' : di.cmo === 'C' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}">
-                        ${escapeHtml(di.cmo)}
-                    </span>
-                </td>
-                <td class="px-4 py-2 text-sm">${escapeHtml(description)}</td>
-                <td class="px-4 py-2 text-xs text-gray-600 italic">${escapeHtml(populationNotes)}</td>
-            </tr></tbody>`;
-        }
-    });
-    dataItemsHtml += '</table></div>';
-} else {
                     dataItemsHtml += '<p class="text-[var(--dark-purple)] opacity-70">No data items are associated with this interface.</p>';
                 }
                 dataItemsHtml += '</div>';
 
-                 let rejectionCodesHtml = '';
-    if (item.rejection_codes && Object.keys(item.rejection_codes).length > 0) {
-        rejectionCodesHtml = `
-            <div class="bg-gradient-to-br from-[var(--white)] to-[var(--birch)] rounded-2xl p-6 shadow-xl border border-gray-100 mt-8">
-                <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                    Rejection Codes
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    ${Object.values(item.rejection_codes).map(code => `
-                        <div class="border rounded-lg p-4 ${code.severity === 'Error' ? 'border-red-200 bg-red-50' : 'border-yellow-200 bg-yellow-50'}">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="font-mono font-bold text-sm">${escapeHtml(code.code)}</span>
-                                <span class="text-xs px-2 py-1 rounded font-semibold ${code.severity === 'Error' ? 'bg-red-200 text-red-800' : 'bg-yellow-200 text-yellow-800'}">
-                                    ${escapeHtml(code.severity)}
-                                </span>
+                let rejectionCodesHtml = '';
+                if (item.rejection_codes && Object.keys(item.rejection_codes).length > 0) {
+                    rejectionCodesHtml = `
+                        <div class="bg-gradient-to-br from-[var(--white)] to-[var(--birch)] rounded-2xl p-6 shadow-xl border border-gray-100 mt-8">
+                            <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                                </svg>
+                                Rejection Codes
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${Object.values(item.rejection_codes).map(code => `
+                                    <div class="border rounded-lg p-4 ${code.severity === 'Error' ? 'border-red-200 bg-red-50' : 'border-yellow-200 bg-yellow-50'}">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="font-mono font-bold text-sm">${escapeHtml(code.code)}</span>
+                                            <span class="text-xs px-2 py-1 rounded font-semibold ${code.severity === 'Error' ? 'bg-red-200 text-red-800' : 'bg-yellow-200 text-yellow-800'}">
+                                                ${escapeHtml(code.severity)}
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-gray-700 mb-1">${escapeHtml(code.description)}</p>
+                                        ${code.field ? `<p class="text-xs text-gray-500">Field: ${escapeHtml(code.field)}</p>` : ''}
+                                    </div>
+                                `).join('')}
                             </div>
-                            <p class="text-sm text-gray-700 mb-1">${escapeHtml(code.description)}</p>
-                            ${code.field ? `<p class="text-xs text-gray-500">Field: ${escapeHtml(code.field)}</p>` : ''}
                         </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
+                    `;
+                }
 
-    // NEW: Add enhanced info display
-    let enhancedInfoHtml = '';
-    if (item.business_process || item.event_codes) {
-        enhancedInfoHtml = `
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                ${item.business_process ? `
-                    <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100">
-                        <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">BUSINESS PROCESS</h4>
-                        <p class="font-semibold">${escapeHtml(item.business_process)}</p>
-                    </div>
-                ` : ''}
-                ${item.event_codes && item.event_codes.length > 0 ? `
-                    <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100">
-                        <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">EVENT CODES</h4>
-                        <div class="flex flex-wrap gap-2">
-                            ${item.event_codes.map(code => `
-                                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-sm font-medium">
-                                    ${escapeHtml(code)}
-                                </span>
-                            `).join('')}
+                // Enhanced info display with event codes
+                let enhancedInfoHtml = '';
+                if (item.business_process || item.event_codes) {
+                    enhancedInfoHtml = `
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                            ${item.business_process ? `
+                                <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100">
+                                    <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">BUSINESS PROCESS</h4>
+                                    <p class="font-semibold">${escapeHtml(item.business_process)}</p>
+                                </div>
+                            ` : ''}
+                            ${item.event_codes && item.event_codes.length > 0 ? `
+                                <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100">
+                                    <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">EVENT CODES</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        ${item.event_codes.map(code => `
+                                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-sm font-medium">
+                                                ${escapeHtml(code)}
+                                            </span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
                         </div>
-                    </div>
-                ` : ''}
-            </div>
-        `;
-    }
+                    `;
+                }
 
-    detailsContent.innerHTML = `<div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 mb-6">
-            <div class="flex-1">
-                <h2 class="text-3xl lg:text-4xl font-bold text-[var(--dark-purple)] mb-2 leading-tight" tabindex="-1">${escapeHtml(item.name)}</h2>
-                <p class="text-lg text-[var(--purple)] opacity-90 font-medium">${escapeHtml(item.id)}</p>
-            </div>
-            <span class="text-xs font-semibold px-4 py-2 rounded-xl ${typeInfo[item.supplier_type].classes} whitespace-nowrap">${escapeHtml(typeInfo[item.supplier_type].label)}</span>
-        </div>
-        ${enhancedInfoHtml}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100"><h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">FROM</h4><p class="font-semibold">${escapeHtml(item.sender) || 'N/A'}</p></div>
-            <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100"><h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">TO</h4><p class="font-semibold">${escapeHtml(item.receiver) || 'N/A'}</p></div>
-        </div>
-        <div class="bg-gradient-to-br from-[var(--white)] to-[var(--birch)] rounded-2xl p-6 shadow-xl border border-gray-100">
-            <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4">Context & Purpose</h3>
-            <p class="leading-relaxed">${escapeHtml(context)}</p>
-        </div>
-        ${rejectionCodesHtml}
-        ${dataItemsHtml}`;
-    
-    detailsContent.querySelector('h2').focus();
-};
+                detailsContent.innerHTML = `<div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 mb-6">
+                        <div class="flex-1">
+                            <h2 class="text-3xl lg:text-4xl font-bold text-[var(--dark-purple)] mb-2 leading-tight" tabindex="-1">${escapeHtml(item.name)}</h2>
+                            <p class="text-lg text-[var(--purple)] opacity-90 font-medium">${escapeHtml(item.id)}</p>
+                        </div>
+                        <span class="text-xs font-semibold px-4 py-2 rounded-xl ${typeInfo[item.supplier_type].classes} whitespace-nowrap">${escapeHtml(typeInfo[item.supplier_type].label)}</span>
+                    </div>
+                    ${enhancedInfoHtml}
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100"><h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">FROM</h4><p class="font-semibold">${escapeHtml(item.sender) || 'N/A'}</p></div>
+                        <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100"><h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">TO</h4><p class="font-semibold">${escapeHtml(item.receiver) || 'N/A'}</p></div>
+                    </div>
+                    <div class="bg-gradient-to-br from-[var(--white)] to-[var(--birch)] rounded-2xl p-6 shadow-xl border border-gray-100">
+                        <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4">Context & Purpose</h3>
+                        <p class="leading-relaxed">${escapeHtml(context)}</p>
+                    </div>
+                    ${rejectionCodesHtml}
+                    ${dataItemsHtml}`;
+                
+                detailsContent.querySelector('h2').focus();
+            };
             
             let debounceTimer;
             searchInput.addEventListener('input', (e) => {
