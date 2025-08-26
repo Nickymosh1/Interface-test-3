@@ -51,23 +51,24 @@
             </p>
         </header>
 
-        <div class="flex flex-col lg:flex-row gap-6 md:gap-8">
-            <aside class="lg:w-1/3 xl:w-1/4 glass p-5 md:p-6 rounded-3xl shadow-2xl">
-                <h2 id="filter-heading" class="text-xl font-bold mb-5 text-[var(--eon-red)]">Find an Interface</h2>
-                <div class="mb-5">
+        <div class="flex flex-col lg:flex-row gap-6 md:gap-8 lg:h-[calc(100vh-12rem)]">
+             <!-- Sidebar with flex layout -->
+            <aside class="lg:w-1/3 xl:w-1/4 glass p-5 md:p-6 rounded-3xl shadow-2xl flex flex-col">
+                <h2 id="filter-heading" class="text-xl font-bold mb-5 text-[var(--eon-red)] flex-shrink-0">Find an Interface</h2>
+                <div class="mb-5 flex-shrink-0">
                     <input type="search" id="searchInput" placeholder="Search ID, name, or data items..." class="search-input w-full px-4 py-3 border-0 rounded-xl focus:ring-2 focus:ring-[var(--eon-red)] transition placeholder:text-[var(--purple)] placeholder:opacity-60 text-sm md:text-base">
                 </div>
-                <div role="group" aria-labelledby="filter-heading" class="flex flex-wrap gap-2 mb-5">
+                <div role="group" aria-labelledby="filter-heading" class="flex flex-wrap gap-2 mb-5 flex-shrink-0">
                     <button class="filter-btn border-0 text-[var(--purple)] bg-[var(--birch)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="all" aria-pressed="true">All Interfaces</button>
                     <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_send" aria-pressed="false" style="background: linear-gradient(135deg, #9254FF20, #9254FF10);">Supplier Send</button>
                     <button class="filter-btn border-0 text-[var(--dark-purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_receive" aria-pressed="false" style="background: linear-gradient(135deg, #FFDE0030, #FFDE0020);">Supplier Receive</button>
                     <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="none" aria-pressed="false" style="background: linear-gradient(135deg, #e5e7eb, #f3f4f6);">Not Involved</button>
                 </div>
-                <!-- Interface list container with updated height -->
-                <div id="interfaceList" class="overflow-y-auto h-[60vh] lg:h-[calc(100vh-20rem)] pr-2" role="region" aria-live="polite" aria-atomic="true"></div>
+                <!-- Interface list now grows to fill remaining space -->
+                <div id="interfaceList" class="overflow-y-auto flex-1 pr-2" role="region" aria-live="polite" aria-atomic="true"></div>
             </aside>
 
-            <main id="detailsPanel" class="lg:w-2/3 xl:w-3/4 bg-white/80 p-5 md:p-8 rounded-3xl shadow-2xl" role="main" aria-live="polite">
+            <main id="detailsPanel" class="lg:w-2/3 xl:w-3/4 bg-white/80 p-5 md:p-8 rounded-3xl shadow-2xl overflow-y-auto" role="main" aria-live="polite">
                 <div id="welcomeMessage" class="flex flex-col items-center justify-center h-full text-center py-16">
                     <div class="hero-text mb-6"><svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 md:w-24 md:h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 9h6v6H9V9z" /></svg></div>
                     <h2 class="text-2xl md:text-3xl font-bold mb-3 hero-text">Select an Interface</h2>
