@@ -7,8 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Base styles and theme variables */
         body {
             font-family: 'Inter', sans-serif;
+            overscroll-behavior-y: none; /* Prevents scroll chaining */
         }
         :root {
             --eon-red: #FF4822;
@@ -17,50 +19,36 @@
             --dark-purple: #36164A;
             --purple: #5E0D98;
             
-            --shadow-red: #e50000;
-            --shadow-birch: #f2e6e1;
-            --shadow-purple: #170920;
-
             /* Data Colors */
             --data-sun: #FFDE00;
             --data-gas-off: #9254FF;
             --data-leaf: #1AE570;
-            
-            /* Shadow colors for data buttons */
-            --shadow-gas-off: #7a46d4;
-            --shadow-sun: #d9bd00;
-            --shadow-leaf: #16c25e;
         }
         
-        /* Modern gradient backgrounds */
+        /* Modern gradient for the background */
         .gradient-bg {
             background: linear-gradient(135deg, var(--birch) 0%, #f0e9e6 100%);
         }
         
-        .card-gradient {
-            background: linear-gradient(145deg, var(--white) 0%, #fdfcfc 100%);
-        }
-        
-        /* Glass morphism effect */
+        /* Glass morphism effect for the sidebar */
         .glass {
-            backdrop-filter: blur(16px);
-            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px) saturate(180%);
+            background: rgba(255, 255, 255, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* Floating animation */
+        /* Floating animation for the main title */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
         }
-        
         .float-animation {
             animation: float 6s ease-in-out infinite;
         }
         
-        /* Improved scrollbar */
+        /* Custom scrollbar for a polished look */
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
@@ -68,18 +56,19 @@
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, var(--eon-red), var(--purple));
             border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(180deg, var(--purple), var(--eon-red));
         }
         
-        /* Enhanced filter buttons */
+        /* Enhanced filter buttons with better active states */
         .filter-btn {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
-        
         .filter-btn::before {
             content: '';
             position: absolute;
@@ -90,110 +79,48 @@
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             transition: left 0.5s;
         }
-        
         .filter-btn:hover::before {
             left: 100%;
         }
-        
         .filter-btn.active-filter {
             transform: translateY(-2px) scale(1.02);
         }
-        
         .filter-btn[data-filter="all"].active-filter {
             background: linear-gradient(135deg, var(--eon-red), #ff6b4a) !important;
             color: var(--white) !important;
             box-shadow: 0 8px 25px rgba(229, 0, 0, 0.3);
         }
-        .filter-btn[data-filter="supplier_send"].active-filter, .filter-btn[data-filter="MHHS Change (BSC)"].active-filter {
+        .filter-btn[data-filter="supplier_send"].active-filter {
             background: linear-gradient(135deg, var(--data-gas-off), #a66eff) !important;
             color: var(--white) !important;
             box-shadow: 0 8px 25px rgba(122, 70, 212, 0.3);
         }
-        .filter-btn[data-filter="supplier_receive"].active-filter, .filter-btn[data-filter="MHHS Change (REC)"].active-filter {
+        .filter-btn[data-filter="supplier_receive"].active-filter {
             background: linear-gradient(135deg, var(--data-sun), #ffe533) !important;
             color: var(--dark-purple) !important;
             box-shadow: 0 8px 25px rgba(217, 189, 0, 0.3);
         }
-        .filter-btn[data-filter="supplier_both"].active-filter, .filter-btn[data-filter="Redundant post-MHHS"].active-filter {
-            background: linear-gradient(135deg, var(--data-leaf), #33ff87) !important;
-            color: var(--dark-purple) !important;
-            box-shadow: 0 8px 25px rgba(22, 194, 94, 0.3);
-        }
-        .filter-btn[data-filter="none"].active-filter, .filter-btn[data-filter="Not Impacted - Enduring Flow"].active-filter {
+        .filter-btn[data-filter="none"].active-filter {
             background: linear-gradient(135deg, var(--dark-purple), var(--purple)) !important;
             color: var(--white) !important;
             box-shadow: 0 8px 25px rgba(23, 9, 32, 0.3);
         }
         
-        /* Modern interface cards */
-        .interface-card, .dflow-card {
+        /* Modern interface cards with hover effects */
+        .interface-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            border-left-width: 4px;
         }
+        .interface-card:hover {
+            transform: translateX(4px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        .border-send { border-color: var(--data-gas-off); }
+        .border-receive { border-color: var(--data-sun); }
+        .border-both { border-color: var(--data-leaf); }
+        .border-none { border-color: #9ca3af; } /* gray-400 */
         
-        .interface-card::before, .dflow-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .interface-card:hover::before, .dflow-card:hover::before {
-            opacity: 1;
-        }
-        
-        .interface-card:hover, .dflow-card:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Enhanced border styles */
-        .border-send {
-            background: linear-gradient(90deg, var(--data-gas-off), transparent);
-            background-size: 4px 100%;
-            background-repeat: no-repeat;
-        }
-        
-        .border-receive {
-            background: linear-gradient(90deg, var(--data-sun), transparent);
-            background-size: 4px 100%;
-            background-repeat: no-repeat;
-        }
-        
-        .border-both {
-            background: linear-gradient(90deg, var(--data-leaf), transparent);
-            background-size: 4px 100%;
-            background-repeat: no-repeat;
-        }
-
-        .border-bsc {
-             background: linear-gradient(90deg, var(--data-gas-off), transparent);
-            background-size: 4px 100%;
-            background-repeat: no-repeat;
-        }
-        .border-rec {
-             background: linear-gradient(90deg, var(--data-sun), transparent);
-            background-size: 4px 100%;
-            background-repeat: no-repeat;
-        }
-        .border-redundant {
-             background: linear-gradient(90deg, var(--data-leaf), transparent);
-            background-size: 4px 100%;
-            background-repeat: no-repeat;
-        }
-        .border-not-impacted {
-            background: linear-gradient(90deg, var(--dark-purple), transparent);
-            background-size: 4px 100%;
-            background-repeat: no-repeat;
-        }
-        
-        /* Header enhancements */
+        /* Gradient text for hero section */
         .hero-text {
             background: linear-gradient(135deg, var(--eon-red), var(--purple));
             -webkit-background-clip: text;
@@ -201,668 +128,379 @@
             background-clip: text;
         }
         
-        /* Details panel improvements */
+        /* Fade-in animation for details panel content */
         .details-fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
-        
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Status badges */
-        .status-badge {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .status-badge::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: left 0.8s;
-        }
-        
-        .status-badge:hover::before {
-            left: 100%;
-        }
-        
-        /* Search input improvements */
+        /* Search input styling */
         .search-input {
-            background: linear-gradient(145deg, var(--birch), #f5f1ef);
+            background: var(--birch);
             transition: all 0.3s ease;
         }
-        
         .search-input:focus {
             background: var(--white);
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(255, 72, 34, 0.1);
-        }
-        
-        /* Welcome message improvements */
-        .welcome-icon {
-            background: linear-gradient(135deg, var(--eon-red), var(--purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Tab styles */
-        .tab-btn {
-            padding: 0.5rem 1.25rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            color: var(--purple);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        .tab-btn.active-tab {
-            background: var(--white);
-            color: var(--eon-red);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border-color: var(--eon-red);
+            transform: scale(1.01);
+            box-shadow: 0 4px 15px rgba(255, 72, 34, 0.1);
         }
     </style>
 </head>
 <body class="gradient-bg text-[var(--dark-purple)] min-h-screen">
 
-    <div class="container mx-auto p-4 md:p-6">
-        <header class="text-center mb-10">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8 md:mb-12">
             <div class="float-animation inline-block">
-                <h1 class="text-4xl md:text-6xl font-bold hero-text mb-3">MHHS Explorer</h1>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold hero-text mb-3">MHHS Interface Explorer</h1>
             </div>
-            <p class="text-lg text-[var(--purple)] opacity-80 max-w-2xl mx-auto leading-relaxed">
-                Discover and explore Interfaces and D-flows in the MHHS ecosystem.
+            <p class="text-base md:text-lg text-[var(--purple)] opacity-80 max-w-2xl mx-auto leading-relaxed">
+                Discover and explore interfaces based on the Supplier's role in the MHHS ecosystem.
             </p>
         </header>
 
-        <!-- Tab Navigation -->
-        <div class="mb-6 flex justify-center">
-            <div class="flex space-x-2 bg-[var(--birch)] p-1.5 rounded-xl shadow-inner">
-                <button id="tab-interface" class="tab-btn active-tab">Interface Explorer</button>
-                <button id="tab-dflow" class="tab-btn">D-flow Explorer</button>
-            </div>
-        </div>
+        <div class="flex flex-col lg:flex-row gap-6 md:gap-8">
 
-        <!-- Interface Explorer Content -->
-        <div id="interface-explorer-content">
-            <div class="flex flex-col lg:flex-row gap-6">
+            <aside class="lg:w-1/3 xl:w-1/4 glass p-5 md:p-6 rounded-3xl shadow-2xl">
+                <h2 id="filter-heading" class="text-xl font-bold mb-5 text-[var(--eon-red)]">Find an Interface</h2>
+                
+                <div class="mb-5">
+                    <input type="search" id="searchInput" placeholder="Search ID, name, or data items..."
+                           class="search-input w-full px-4 py-3 border-0 rounded-xl focus:ring-2 focus:ring-[var(--eon-red)] transition placeholder:text-[var(--purple)] placeholder:opacity-60 text-sm md:text-base">
+                </div>
 
-                <aside class="lg:w-1/3 xl:w-1/4 glass p-6 rounded-3xl shadow-2xl backdrop-blur-sm">
-                    <h2 id="filter-heading" class="text-xl font-bold mb-5 text-[var(--eon-red)]">Find an Interface</h2>
-                    
-                    <div class="mb-5">
-                        <input type="search" id="searchInput" placeholder="Search by ID, name, or description..."
-                               class="search-input w-full px-4 py-3 border-0 rounded-xl focus:ring-2 focus:ring-[var(--eon-red)] transition placeholder:text-[var(--purple)] placeholder:opacity-60 text-base">
+                <div role="group" aria-labelledby="filter-heading" class="flex flex-wrap gap-2 mb-5">
+                    <button class="filter-btn border-0 text-[var(--purple)] bg-[var(--birch)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="all" aria-pressed="true">All Interfaces</button>
+                    <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_send" aria-pressed="false" style="background: linear-gradient(135deg, #9254FF20, #9254FF10);">Supplier Send</button>
+                    <button class="filter-btn border-0 text-[var(--dark-purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_receive" aria-pressed="false" style="background: linear-gradient(135deg, #FFDE0030, #FFDE0020);">Supplier Receive</button>
+                    <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="none" aria-pressed="false" style="background: linear-gradient(135deg, #e5e7eb, #f3f4f6);">Not Involved</button>
+                </div>
+
+                <div id="interfaceList" class="overflow-y-auto h-[50vh] lg:h-[calc(100vh-22rem)] pr-2" role="region" aria-live="polite" aria-atomic="true">
                     </div>
+            </aside>
 
-                    <div role="group" aria-labelledby="filter-heading" class="flex flex-wrap gap-2 mb-5">
-                        <button class="filter-btn border-0 text-[var(--purple)] bg-[var(--birch)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="all" aria-pressed="true">All Interfaces</button>
-                        <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_send" aria-pressed="false" style="background: linear-gradient(135deg, #9254FF20, #9254FF10);">Supplier Send</button>
-                        <button class="filter-btn border-0 text-[var(--dark-purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_receive" aria-pressed="false" style="background: linear-gradient(135deg, #FFDE0030, #FFDE0020);">Supplier Receive</button>
-                        <button class="filter-btn border-0 text-[var(--dark-purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="supplier_both" aria-pressed="false" style="background: linear-gradient(135deg, #1AE57030, #1AE57020);">Send & Receive</button>
-                        <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="none" aria-pressed="false" style="background: linear-gradient(135deg, #e5e7eb, #f3f4f6);">Not Involved</button>
+            <main id="detailsPanel" class="lg:w-2/3 xl:w-3/4 bg-white/80 p-5 md:p-8 rounded-3xl shadow-2xl" role="main" aria-live="polite">
+                <div id="welcomeMessage" class="flex flex-col items-center justify-center h-full text-center py-16">
+                    <div class="hero-text mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 md:w-24 md:h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 9h6v6H9V9z" />
+                        </svg>
                     </div>
-
-                    <div id="interfaceList" class="overflow-y-auto h-[60vh] pr-2" role="region" aria-live="polite" aria-atomic="true">
-                        </div>
-                </aside>
-
-                <main id="detailsPanel" class="lg:w-2/3 xl:w-3/4 card-gradient p-6 md:p-8 rounded-3xl shadow-2xl" role="main" aria-live="polite">
-                    <div id="welcomeMessage" class="flex flex-col items-center justify-center h-full text-center py-16">
-                        <div class="welcome-icon mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 9h6v6H9V9z" />
-                            </svg>
-                        </div>
-                        <h2 class="text-3xl font-bold mb-3 hero-text">Select an Interface</h2>
-                        <p class="text-lg text-[var(--purple)] opacity-80 max-w-md leading-relaxed">Click on any interface from the list to explore its details.</p>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-3 hero-text">Select an Interface</h2>
+                    <p class="text-base md:text-lg text-[var(--purple)] opacity-80 max-w-md leading-relaxed">Click on any interface from the list to explore its details.</p>
+                </div>
+                <div id="detailsContent" class="hidden">
                     </div>
-                    <div id="detailsContent" class="hidden">
-                        </div>
-                </main>
-            </div>
-        </div>
-
-        <!-- D-flow Explorer Content (Initially Hidden) -->
-        <div id="dflow-explorer-content" class="hidden">
-             <div class="flex flex-col lg:flex-row gap-6">
-
-                <aside class="lg:w-1/3 xl:w-1/4 glass p-6 rounded-3xl shadow-2xl backdrop-blur-sm">
-                    <h2 class="text-xl font-bold mb-5 text-[var(--eon-red)]">Find a D-flow</h2>
-                    
-                    <div class="mb-5">
-                        <input type="search" id="dflowSearchInput" placeholder="Search by ID or name..."
-                               class="search-input w-full px-4 py-3 border-0 rounded-xl focus:ring-2 focus:ring-[var(--eon-red)] transition placeholder:text-[var(--purple)] placeholder:opacity-60 text-base">
-                    </div>
-
-                    <div role="group" class="flex flex-wrap gap-2 mb-5">
-                        <button class="filter-btn border-0 text-[var(--purple)] bg-[var(--birch)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="all" aria-pressed="true">All D-flows</button>
-                        <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="MHHS Change (BSC)" aria-pressed="false" style="background: linear-gradient(135deg, #9254FF20, #9254FF10);">MHHS Change (BSC)</button>
-                        <button class="filter-btn border-0 text-[var(--dark-purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="MHHS Change (REC)" aria-pressed="false" style="background: linear-gradient(135deg, #FFDE0030, #FFDE0020);">MHHS Change (REC)</button>
-                        <button class="filter-btn border-0 text-[var(--dark-purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="Redundant post-MHHS" aria-pressed="false" style="background: linear-gradient(135deg, #1AE57030, #1AE57020);">Redundant</button>
-                        <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="Not Impacted - Enduring Flow" aria-pressed="false" style="background: linear-gradient(135deg, #e5e7eb, #f3f4f6);">Not Impacted</button>
-                    </div>
-
-                    <div id="dflowList" class="overflow-y-auto h-[60vh] pr-2" role="region" aria-live="polite" aria-atomic="true">
-                    </div>
-                </aside>
-
-                <main id="dflowDetailsPanel" class="lg:w-2/3 xl:w-3/4 card-gradient p-6 md:p-8 rounded-3xl shadow-2xl" role="main" aria-live="polite">
-                    <div id="dflowWelcomeMessage" class="flex flex-col items-center justify-center h-full text-center py-16">
-                        <div class="welcome-icon mb-6">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1" aria-hidden="true">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10m16-5H4m16 5H4M4 7h16v10H4V7z"></path>
-                           </svg>
-                        </div>
-                        <h2 class="text-3xl font-bold mb-3 hero-text">Select a D-flow</h2>
-                        <p class="text-lg text-[var(--purple)] opacity-80 max-w-md leading-relaxed">Click on any D-flow from the list to explore its details.</p>
-                    </div>
-                    <div id="dflowDetailsContent" class="hidden">
-                    </div>
-                </main>
-            </div>
+            </main>
         </div>
     </div>
 
     <script>
-        // --- UTILITY FUNCTION ---
-        const escapeHtml = (text) => {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        // --- SCRIPT UPDATED FOR NORMALIZED JSON ---
+
+        // Application State
+        const state = {
+            interfaces: [],
+            dataItemsCatalogue: {},
+            dataBlocksCatalogue: {},
+            filteredInterfaces: [],
+            currentFilter: 'all',
+            currentSearchTerm: '',
         };
 
-        // --- GLOBAL APP STATE ---
-        let interfaceData = [];
-        let dflowData = [];
-        let commonBlocks = {};
+        // DOM Elements
+        const DOMElements = {
+            searchInput: null,
+            interfaceList: null,
+            welcomeMessage: null,
+            detailsContent: null,
+            filterButtons: null,
+        };
 
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            setupTabs();
-            initializeInterfaceExplorer();
-            initializeDflowExplorer();
-        });
+        document.addEventListener('DOMContentLoaded', initApp);
 
-        // --- TAB MANAGEMENT ---
-        function setupTabs() {
-            const tabInterface = document.getElementById('tab-interface');
-            const tabDflow = document.getElementById('tab-dflow');
-            const interfaceContent = document.getElementById('interface-explorer-content');
-            const dflowContent = document.getElementById('dflow-explorer-content');
-
-            tabInterface.addEventListener('click', () => {
-                interfaceContent.classList.remove('hidden');
-                dflowContent.classList.add('hidden');
-                tabInterface.classList.add('active-tab');
-                tabDflow.classList.remove('active-tab');
-            });
-
-            tabDflow.addEventListener('click', () => {
-                dflowContent.classList.remove('hidden');
-                interfaceContent.classList.add('hidden');
-                tabDflow.classList.add('active-tab');
-                tabInterface.classList.remove('active-tab');
-            });
+        async function initApp() {
+            cacheDOMElements();
+            const success = await fetchData();
+            if (!success) return;
+            setupEventListeners();
+            document.querySelector('.filter-btn[data-filter="all"]').classList.add('active-filter');
+            filterAndRender();
         }
 
-        // --- Helper function to process blocks and build data items ---
-        function processInterfaceBlocks(interfaceItem, commonBlocks) {
-            const dataItems = [];
-            
-            if (!interfaceItem.blocks) return dataItems;
-            
-            interfaceItem.blocks.forEach(block => {
-                let blockData = null;
-                let condition = '';
-                let repeatable = false;
-                
-                // Handle different block formats
-                if (typeof block === 'string') {
-                    // Simple block reference
-                    blockData = commonBlocks[block];
-                } else if (typeof block === 'object' && block.ref) {
-                    // Block with conditions
-                    blockData = commonBlocks[block.ref];
-                    condition = block.condition || '';
-                    repeatable = block.repeatable || false;
-                }
-                
-                // Add block data if found
-                if (blockData) {
-                    // Add block header
-                    let headerTitle = blockData.title;
-                    if (condition) {
-                        headerTitle += ` (${condition})`;
-                    }
-                    if (repeatable) {
-                        headerTitle += ' [Repeatable]';
-                    }
-                    
-                    dataItems.push({
-                        isHeader: true,
-                        title: headerTitle
-                    });
-                    
-                    // Add block data items
-                    if (blockData.data_items) {
-                        blockData.data_items.forEach(item => {
-                            dataItems.push({
-                                id: item.id,
-                                name: item.name,
-                                cmo: item.cmo,
-                                rule: item.rule || '',
-                                isHeader: false
-                            });
-                        });
-                    }
-                } else if (typeof block === 'string' && !commonBlocks[block]) {
-                    // Block not found in common blocks - add as placeholder header
-                    dataItems.push({
-                        isHeader: true,
-                        title: `${block} - Block Definition Not Found`
-                    });
-                }
-            });
-            
-            return dataItems;
+        function cacheDOMElements() {
+            DOMElements.searchInput = document.getElementById('searchInput');
+            DOMElements.interfaceList = document.getElementById('interfaceList');
+            DOMElements.welcomeMessage = document.getElementById('welcomeMessage');
+            DOMElements.detailsContent = document.getElementById('detailsContent');
+            DOMElements.filterButtons = document.querySelectorAll('.filter-btn');
         }
 
-        // --- INTERFACE EXPLORER LOGIC ---
-        async function initializeInterfaceExplorer() {
+        async function fetchData() {
             try {
-                const response = await fetch('interfaceData.json');
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                const rawData = await response.json();
-                
-                // Store common blocks
-                commonBlocks = rawData.common_blocks || {};
-                
-                // Process interfaces
-                interfaceData = rawData.interfaces.map(item => {
-                    // Build data_items from blocks
-                    const processedDataItems = processInterfaceBlocks(item, commonBlocks);
-                    
-                    return {
-                        ...item,
-                        data_items: processedDataItems,
-                        // Add a context field if not present
-                        context: item.context || `This interface handles ${item.name}. It facilitates communication between ${item.sender} and ${item.receiver}.`
-                    };
-                });
-                
+                const response = await fetch('interfaceData (1).json'); // Make sure this path is correct
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                state.interfaces = data.interfaces;
+                state.dataItemsCatalogue = data.dataItemsCatalogue;
+                state.dataBlocksCatalogue = data.dataBlocksCatalogue;
+                state.filteredInterfaces = state.interfaces;
+                return true;
             } catch (error) {
-                console.error("Could not load interface data:", error);
-                document.getElementById('interfaceList').innerHTML = `<p class="text-center text-red-600 p-4">Error: Could not load interface data.</p>`;
-                return;
+                console.error("Could not load or parse interface data:", error);
+                DOMElements.interfaceList.innerHTML = `<p class="text-center text-red-600 p-4">Error: Could not load interface data.</p>`;
+                return false;
             }
+        }
 
-            const searchInput = document.getElementById('searchInput');
-            const interfaceListEl = document.getElementById('interfaceList');
-            const welcomeMessage = document.getElementById('welcomeMessage');
-            const detailsContent = document.getElementById('detailsContent');
-            const filterButtons = document.querySelectorAll('#interface-explorer-content .filter-btn');
-            
-            let currentFilter = 'all';
-            let currentSearchTerm = '';
-            
-            const renderInterfaceList = () => {
-                const keywords = currentSearchTerm.toLowerCase().split(' ').filter(k => k.trim() !== '');
-
-                const filteredInterfaces = interfaceData.filter(item => {
-                    const matchesFilter =
-                        currentFilter === 'all' ||
-                        item.supplier_type === currentFilter ||
-                        (currentFilter === 'supplier_send' && item.supplier_type === 'supplier_both') ||
-                        (currentFilter === 'supplier_receive' && item.supplier_type === 'supplier_both');
-                    
-                    if (!matchesFilter) return false;
-                    if (keywords.length === 0) return true;
-
-                    let searchableText = [
-                        item.id,
-                        item.name,
-                        item.description,
-                        item.context,
-                        item.sender,
-                        item.receiver
-                    ].join(' ').toLowerCase();
-
-                    if (item.data_items) {
-                        const dataItemText = item.data_items
-                            .filter(di => !di.isHeader)
-                            .map(di => `${di.id || ''} ${di.name || ''} ${di.rule || ''}`)
-                            .join(' ');
-                        searchableText += ` ${dataItemText.toLowerCase()}`;
-                    }
-
-                    // Add event codes to searchable text
-                    if (item.event_codes) {
-                        searchableText += ` ${item.event_codes.join(' ').toLowerCase()}`;
-                    }
-                    
-                    return keywords.every(keyword => searchableText.includes(keyword));
-                });
-
-                interfaceListEl.innerHTML = '';
-
-                if (filteredInterfaces.length === 0) {
-                    interfaceListEl.innerHTML = `<div class="text-center text-[var(--purple)] opacity-80 p-4 bg-[var(--birch)] rounded-2xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.44-1.01-5.9-2.62l2.9-2.379a4 4 0 011.02.189M12 9a3 3 0 013 3m0 0a3 3 0 01-3 3m0-3h.01m9 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        <p class="text-base font-medium">No interfaces found</p>
-                    </div>`;
-                    return;
-                }
-                
-                const fragment = document.createDocumentFragment();
-                filteredInterfaces.forEach(item => {
-                    const typeStyles = {
-                        supplier_send: 'border-send',
-                        supplier_receive: 'border-receive',
-                        supplier_both: 'border-both',
-                        none: 'border-l-4 border-gray-300'
-                    };
-                    const element = document.createElement('div');
-                    element.className = `interface-card p-4 mb-2 bg-[var(--white)] rounded-xl cursor-pointer shadow-lg ${typeStyles[item.supplier_type]}`;
-                    element.dataset.id = item.id;
-                    element.setAttribute('role', 'button');
-                    element.setAttribute('tabindex', '0');
-                    element.innerHTML = `
-                        <p class="font-bold text-[var(--dark-purple)] pointer-events-none text-base mb-1">${escapeHtml(item.id)}</p>
-                        <p class="text-[var(--purple)] opacity-90 pointer-events-none leading-relaxed text-sm">${escapeHtml(item.name)}</p>
-                    `;
-                    fragment.appendChild(element);
-                });
-                interfaceListEl.appendChild(fragment);
-            };
-
-            const showDetails = (id) => {
-                const item = interfaceData.find(i => i.id === id);
-                if (!item) return;
-
-                welcomeMessage.classList.add('hidden');
-                detailsContent.classList.remove('hidden');
-                detailsContent.classList.add('details-fade-in');
-
-                const typeInfo = {
-                    supplier_send: { label: 'Supplier Send', classes: 'status-badge bg-gradient-to-r from-[var(--data-gas-off)] to-purple-600 text-white shadow-lg' },
-                    supplier_receive: { label: 'Supplier Receive', classes: 'status-badge bg-gradient-to-r from-[var(--data-sun)] to-yellow-400 text-[var(--dark-purple)] shadow-lg' },
-                    supplier_both: { label: 'Supplier Send & Receive', classes: 'status-badge bg-gradient-to-r from-[var(--data-leaf)] to-green-400 text-[var(--dark-purple)] shadow-lg' },
-                    none: { label: 'Supplier Not Involved', classes: 'status-badge bg-gradient-to-r from-gray-500 to-gray-600 text-white shadow-lg' }
-                };
-
-                const context = item.context || "No additional context is available for this interface.";
-                
-                let dataItemsHtml = `<div class="bg-gradient-to-br from-[var(--white)] to-[var(--birch)] rounded-2xl p-6 shadow-xl border border-gray-100 mt-8">
-                        <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                            Data Items
-                        </h3>`;
-
-                if (item.data_items && item.data_items.length > 0) {
-                    dataItemsHtml += '<div class="overflow-y-auto overflow-x-auto max-h-[50vh]"><table class="w-full text-sm text-left">';
-                    item.data_items.forEach(di => {
-                        if (di.isHeader) {
-                            dataItemsHtml += `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]"><tr class="border-b"><th colspan="4" class="px-4 py-2 font-bold">${escapeHtml(di.title)}</th></tr></thead>`;
-                            dataItemsHtml += `<thead class="text-xs text-[var(--purple)] uppercase"><tr class="border-b">
-                                <th class="px-4 py-2">ID</th>
-                                <th class="px-4 py-2">Data Item</th>
-                                <th class="px-4 py-2">M/O/C</th>
-                                <th class="px-4 py-2">Rule / Description</th>
-                            </tr></thead>`;
-                        } else {
-                            dataItemsHtml += `<tbody class="divide-y"><tr class="hover:bg-gray-50">
-                                <td class="px-4 py-2 font-mono font-bold text-blue-600">${escapeHtml(di.id)}</td>
-                                <td class="px-4 py-2 font-medium">${escapeHtml(di.name)}</td>
-                                <td class="px-4 py-2 font-semibold text-center">
-                                    <span class="px-2 py-1 rounded text-xs ${di.cmo === 'M' ? 'bg-red-100 text-red-800' : di.cmo === 'C' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}">
-                                        ${escapeHtml(di.cmo)}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 text-sm">${escapeHtml(di.rule)}</td>
-                            </tr></tbody>`;
-                        }
-                    });
-                    dataItemsHtml += '</table></div>';
-                } else {
-                    dataItemsHtml += '<p class="text-[var(--dark-purple)] opacity-70">No data items are associated with this interface.</p>';
-                }
-                dataItemsHtml += '</div>';
-
-                let rejectionCodesHtml = '';
-                if (item.rejection_codes && Object.keys(item.rejection_codes).length > 0) {
-                    rejectionCodesHtml = `
-                        <div class="bg-gradient-to-br from-[var(--white)] to-[var(--birch)] rounded-2xl p-6 shadow-xl border border-gray-100 mt-8">
-                            <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                                </svg>
-                                Rejection Codes
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                ${Object.values(item.rejection_codes).map(code => `
-                                    <div class="border rounded-lg p-4 ${code.severity === 'Error' ? 'border-red-200 bg-red-50' : 'border-yellow-200 bg-yellow-50'}">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="font-mono font-bold text-sm">${escapeHtml(code.code)}</span>
-                                            <span class="text-xs px-2 py-1 rounded font-semibold ${code.severity === 'Error' ? 'bg-red-200 text-red-800' : 'bg-yellow-200 text-yellow-800'}">
-                                                ${escapeHtml(code.severity)}
-                                            </span>
-                                        </div>
-                                        <p class="text-sm text-gray-700 mb-1">${escapeHtml(code.description)}</p>
-                                        ${code.field ? `<p class="text-xs text-gray-500">Field: ${escapeHtml(code.field)}</p>` : ''}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // Enhanced info display with event codes
-                let enhancedInfoHtml = '';
-                if (item.business_process || item.event_codes) {
-                    enhancedInfoHtml = `
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                            ${item.business_process ? `
-                                <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100">
-                                    <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">BUSINESS PROCESS</h4>
-                                    <p class="font-semibold">${escapeHtml(item.business_process)}</p>
-                                </div>
-                            ` : ''}
-                            ${item.event_codes && item.event_codes.length > 0 ? `
-                                <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100">
-                                    <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">EVENT CODES</h4>
-                                    <div class="flex flex-wrap gap-2">
-                                        ${item.event_codes.map(code => `
-                                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-sm font-medium">
-                                                ${escapeHtml(code)}
-                                            </span>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }
-
-                detailsContent.innerHTML = `<div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 mb-6">
-                        <div class="flex-1">
-                            <h2 class="text-3xl lg:text-4xl font-bold text-[var(--dark-purple)] mb-2 leading-tight" tabindex="-1">${escapeHtml(item.name)}</h2>
-                            <p class="text-lg text-[var(--purple)] opacity-90 font-medium">${escapeHtml(item.id)}</p>
-                        </div>
-                        <span class="text-xs font-semibold px-4 py-2 rounded-xl ${typeInfo[item.supplier_type].classes} whitespace-nowrap">${escapeHtml(typeInfo[item.supplier_type].label)}</span>
-                    </div>
-                    ${enhancedInfoHtml}
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100"><h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">FROM</h4><p class="font-semibold">${escapeHtml(item.sender) || 'N/A'}</p></div>
-                        <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100"><h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">TO</h4><p class="font-semibold">${escapeHtml(item.receiver) || 'N/A'}</p></div>
-                    </div>
-                    <div class="bg-gradient-to-br from-[var(--white)] to-[var(--birch)] rounded-2xl p-6 shadow-xl border border-gray-100">
-                        <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4">Context & Purpose</h3>
-                        <p class="leading-relaxed">${escapeHtml(context)}</p>
-                    </div>
-                    ${rejectionCodesHtml}
-                    ${dataItemsHtml}`;
-                
-                detailsContent.querySelector('h2').focus();
-            };
-            
+        function setupEventListeners() {
             let debounceTimer;
-            searchInput.addEventListener('input', (e) => {
+            DOMElements.searchInput.addEventListener('input', (e) => {
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(() => {
-                    currentSearchTerm = e.target.value;
-                    renderInterfaceList();
-                }, 300);
+                    state.currentSearchTerm = e.target.value;
+                    filterAndRender();
+                }, 250);
             });
 
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    currentFilter = button.dataset.filter;
-                    filterButtons.forEach(btn => {
-                        btn.classList.remove('active-filter');
-                        btn.setAttribute('aria-pressed', 'false');
-                    });
-                    button.classList.add('active-filter');
-                    button.setAttribute('aria-pressed', 'true');
-                    renderInterfaceList();
-                });
+            DOMElements.filterButtons.forEach(button => {
+                button.addEventListener('click', () => handleFilterClick(button));
             });
 
-            interfaceListEl.addEventListener('click', (e) => {
-                const itemElement = e.target.closest('[data-id]');
-                if (itemElement) showDetails(itemElement.dataset.id);
-            });
+            const handleItemSelection = (element) => {
+                 if (element) {
+                    renderInterfaceDetails(element.dataset.id);
+                }
+            }
 
-            interfaceListEl.addEventListener('keydown', (e) => {
+            DOMElements.interfaceList.addEventListener('click', (e) => handleItemSelection(e.target.closest('[data-id]')));
+            DOMElements.interfaceList.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                    const itemElement = e.target.closest('[data-id]');
-                    if (itemElement) {
-                        e.preventDefault();
-                        showDetails(itemElement.dataset.id);
-                    }
+                    e.preventDefault();
+                    handleItemSelection(e.target.closest('[data-id]'));
                 }
             });
+        }
 
-            document.querySelector('#interface-explorer-content .filter-btn[data-filter="all"]').classList.add('active-filter');
+        function handleFilterClick(button) {
+            state.currentFilter = button.dataset.filter;
+            DOMElements.filterButtons.forEach(btn => {
+                btn.classList.remove('active-filter');
+                btn.setAttribute('aria-pressed', 'false');
+            });
+            button.classList.add('active-filter');
+            button.setAttribute('aria-pressed', 'true');
+            filterAndRender();
+        }
+
+        function filterAndRender() {
+            const searchTerms = state.currentSearchTerm.toLowerCase().split(' ').filter(term => term.trim() !== '');
+            
+            state.filteredInterfaces = state.interfaces.filter(item => {
+                const matchesFilter =
+                    state.currentFilter === 'all' ||
+                    item.supplier_type === state.currentFilter ||
+                    (state.currentFilter === 'supplier_send' && item.supplier_type === 'supplier_both') ||
+                    (state.currentFilter === 'supplier_receive' && item.supplier_type === 'supplier_both');
+
+                if (!matchesFilter) return false;
+                if (searchTerms.length === 0) return true;
+
+                // Build a comprehensive string of all searchable content for the item
+                const searchableContent = buildSearchableContent(item);
+                
+                // Check if EVERY search term is present
+                return searchTerms.every(term => searchableContent.includes(term));
+            });
+
             renderInterfaceList();
         }
 
-        // --- D-FLOW EXPLORER LOGIC ---
-        async function initializeDflowExplorer() {
-            try {
-                const response = await fetch('dflowData.json');
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                dflowData = await response.json();
-            } catch (error) {
-                console.error("Could not load D-flow data:", error);
-                document.getElementById('dflowList').innerHTML = `<p class="text-center text-red-600 p-4">Error: Could not load D-flow data.</p>`;
+        function buildSearchableContent(interfaceItem) {
+            let content = [
+                interfaceItem.id,
+                interfaceItem.name,
+                interfaceItem.description
+            ].join(' ').toLowerCase();
+
+            if (interfaceItem.composition) {
+                interfaceItem.composition.forEach(comp => {
+                    if (comp.type === 'block' && state.dataBlocksCatalogue[comp.id]) {
+                        state.dataBlocksCatalogue[comp.id].items.forEach(itemId => {
+                             const dataItem = state.dataItemsCatalogue[itemId];
+                             if(dataItem) {
+                                content += ` ${itemId} ${dataItem.name} ${dataItem.rule}`;
+                             }
+                        });
+                    } else if (comp.type === 'item') {
+                         const dataItem = state.dataItemsCatalogue[comp.id];
+                         if(dataItem) {
+                            content += ` ${comp.id} ${dataItem.name} ${dataItem.rule}`;
+                         }
+                    }
+                });
+            }
+            return content.toLowerCase();
+        }
+
+        function renderInterfaceList() {
+            const { interfaceList } = DOMElements;
+            if (state.filteredInterfaces.length === 0) {
+                interfaceList.innerHTML = `<div class="text-center text-[var(--purple)] opacity-80 p-4 bg-[var(--birch)] rounded-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    <p class="text-base font-medium">No interfaces found</p>
+                    <p class="text-xs opacity-70">Try a different search or filter</p>
+                </div>`;
                 return;
             }
+            
+            const fragment = document.createDocumentFragment();
+            const typeClasses = {
+                supplier_send: 'border-send',
+                supplier_receive: 'border-receive',
+                supplier_both: 'border-both',
+                none: 'border-none'
+            };
 
-            const searchInput = document.getElementById('dflowSearchInput');
-            const dflowListEl = document.getElementById('dflowList');
-            const filterButtons = document.querySelectorAll('#dflow-explorer-content .filter-btn');
+            state.filteredInterfaces.forEach(item => {
+                const element = document.createElement('div');
+                element.className = `interface-card p-3 md:p-4 mb-2 bg-[var(--white)] rounded-xl cursor-pointer shadow-md ${typeClasses[item.supplier_type]}`;
+                element.dataset.id = item.id;
+                element.setAttribute('role', 'button');
+                element.setAttribute('tabindex', '0');
+                element.innerHTML = `
+                    <p class="font-bold text-[var(--dark-purple)] pointer-events-none text-sm md:text-base mb-1">${escapeHtml(item.id)}</p>
+                    <p class="text-[var(--purple)] opacity-90 pointer-events-none leading-relaxed text-xs md:text-sm">${escapeHtml(item.name)}</p>
+                `;
+                fragment.appendChild(element);
+            });
+            interfaceList.innerHTML = ''; // Clear previous content
+            interfaceList.appendChild(fragment);
+        }
 
-            let currentFilter = 'all';
-            let currentSearchTerm = '';
+        function renderInterfaceDetails(id) {
+            const item = state.interfaces.find(i => i.id === id);
+            if (!item) return;
 
-            const renderList = () => {
-                const keywords = currentSearchTerm.toLowerCase().split(' ').filter(k => k.trim());
-                const filtered = dflowData.filter(item => {
-                    const matchesFilter = currentFilter === 'all' || item.impact === currentFilter;
-                    if (!matchesFilter) return false;
-                    if (keywords.length === 0) return true;
-                    const searchableText = [item.id, item.name].join(' ').toLowerCase();
-                    return keywords.every(keyword => searchableText.includes(keyword));
-                });
+            DOMElements.welcomeMessage.classList.add('hidden');
+            DOMElements.detailsContent.classList.remove('hidden');
+            DOMElements.detailsContent.classList.add('details-fade-in');
+            setTimeout(() => DOMElements.detailsContent.classList.remove('details-fade-in'), 500);
 
-                dflowListEl.innerHTML = '';
-                if (filtered.length === 0) {
-                    dflowListEl.innerHTML = `<div class="text-center text-[var(--purple)] opacity-80 p-4 bg-[var(--birch)] rounded-2xl"><p>No D-flows found.</p></div>`;
-                    return;
+            const typeInfo = {
+                supplier_send: { label: 'Supplier Send', classes: 'bg-gradient-to-r from-[var(--data-gas-off)] to-purple-600 text-white' },
+                supplier_receive: { label: 'Supplier Receive', classes: 'bg-gradient-to-r from-[var(--data-sun)] to-yellow-400 text-[var(--dark-purple)]' },
+                supplier_both: { label: 'Supplier Send & Receive', classes: 'bg-gradient-to-r from-[var(--data-leaf)] to-green-400 text-[var(--dark-purple)]' },
+                none: { label: 'Supplier Not Involved', classes: 'bg-gradient-to-r from-gray-500 to-gray-600 text-white' }
+            };
+
+            const context = item.context || "No additional context is available for this interface.";
+            const dataItemsHtml = generateDataItemsHtml(item);
+
+            DOMElements.detailsContent.innerHTML = `
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+                    <div class="flex-1">
+                        <h2 class="text-2xl lg:text-3xl font-bold text-[var(--dark-purple)] mb-1 leading-tight" tabindex="-1">${escapeHtml(item.name)}</h2>
+                        <p class="text-base lg:text-lg text-[var(--purple)] opacity-90 font-medium">${escapeHtml(item.id)}</p>
+                    </div>
+                    <span class="text-xs font-semibold px-4 py-2 rounded-full shadow-md ${typeInfo[item.supplier_type].classes} whitespace-nowrap">${escapeHtml(typeInfo[item.supplier_type].label)}</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+                    <div class="bg-white/50 p-4 sm:p-5 rounded-2xl shadow-lg border border-gray-100">
+                        <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">FROM</h4>
+                        <p class="font-semibold text-[var(--dark-purple)] text-sm md:text-base leading-relaxed">${escapeHtml(item.sender) || 'N/A'}</p>
+                    </div>
+                    <div class="bg-white/50 p-4 sm:p-5 rounded-2xl shadow-lg border border-gray-100">
+                        <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">TO</h4>
+                        <p class="font-semibold text-[var(--dark-purple)] text-sm md:text-base leading-relaxed">${escapeHtml(item.receiver) || 'N/A'}</p>
+                    </div>
+                </div>
+                <div class="bg-white/50 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        Context & Purpose
+                    </h3>
+                    <p class="text-[var(--dark-purple)] leading-relaxed text-sm md:text-base">${escapeHtml(context)}</p>
+                </div>
+                ${dataItemsHtml}`;
+            
+            DOMElements.detailsContent.querySelector('h2').focus({ preventScroll: true });
+        }
+        
+        function generateDataItemsHtml(interfaceItem) {
+             if (!interfaceItem.composition || interfaceItem.composition.length === 0) {
+                 return '<p class="text-[var(--dark-purple)] opacity-70 mt-6">No data items are associated with this interface.</p>';
+             }
+
+             const tableContent = interfaceItem.composition.map(comp => {
+                if (comp.type === 'header') {
+                    return `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]/70 sticky top-0"><tr class="border-b"><th colspan="4" class="px-4 py-2 font-bold">${escapeHtml(comp.title)}</th></tr></thead>`;
                 }
 
-                const fragment = document.createDocumentFragment();
-                filtered.forEach(item => {
-                    const impactStyles = {
-                        'MHHS Change (BSC)': 'border-bsc',
-                        'MHHS Change (REC)': 'border-rec',
-                        'Redundant post-MHHS': 'border-redundant',
-                        'Not Impacted - Enduring Flow': 'border-not-impacted',
-                        'MHHS Change (Other)': 'border-l-4 border-gray-400'
-                    };
-                    const el = document.createElement('div');
-                    el.className = `dflow-card p-4 mb-2 bg-[var(--white)] rounded-xl cursor-pointer shadow-lg ${impactStyles[item.impact] || 'border-l-4 border-gray-300'}`;
-                    el.dataset.id = item.id;
-                    el.innerHTML = `<p class="font-bold text-base">${escapeHtml(item.id)}</p><p class="text-sm opacity-90">${escapeHtml(item.name)}</p>`;
-                    fragment.appendChild(el);
-                });
-                dflowListEl.appendChild(fragment);
-            };
+                if (comp.type === 'item') {
+                    const di = state.dataItemsCatalogue[comp.id];
+                    if (!di) return '';
+                     return `<tbody class="divide-y divide-gray-200/50"><tr class="hover:bg-gray-50/50">
+                                <td class="px-4 py-3 font-mono font-semibold text-xs">${escapeHtml(comp.id)}</td>
+                                <td class="px-4 py-3">${escapeHtml(di.name)}</td>
+                                <td class="px-4 py-3 font-semibold text-center">${escapeHtml(di.cmo)}</td>
+                                <td class="px-4 py-3 text-xs opacity-80">${escapeHtml(di.rule)}</td>
+                            </tr></tbody>`;
+                }
 
-            const showDetails = (id) => {
-                const item = dflowData.find(i => i.id === id);
-                if (!item) return;
+                if (comp.type === 'block') {
+                    const block = state.dataBlocksCatalogue[comp.id];
+                    if (!block) return '';
+                    
+                    const headerHtml = `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]/70 sticky top-0"><tr class="border-b"><th colspan="4" class="px-4 py-2 font-bold">${escapeHtml(comp.titleOverride || block.title)}</th></tr></thead>
+                                      <thead class="text-xs text-[var(--purple)] uppercase bg-[var(--birch)]/70 sticky top-9"><tr class="border-b"><th class="px-4 py-2">ID</th><th class="px-4 py-2">Data Item</th><th class="px-4 py-2">M/O/C</th><th class="px-4 py-2">Description / Rule</th></tr></thead>`;
 
-                document.getElementById('dflowWelcomeMessage').classList.add('hidden');
-                const detailsContent = document.getElementById('dflowDetailsContent');
-                detailsContent.classList.remove('hidden');
-                
-                const impactInfo = {
-                    'MHHS Change (BSC)': { label: 'MHHS Change (BSC)', classes: 'status-badge bg-gradient-to-r from-[var(--data-gas-off)] to-purple-600 text-white shadow-lg' },
-                    'MHHS Change (REC)': { label: 'MHHS Change (REC)', classes: 'status-badge bg-gradient-to-r from-[var(--data-sun)] to-yellow-400 text-[var(--dark-purple)] shadow-lg' },
-                    'Redundant post-MHHS': { label: 'Redundant post-MHHS', classes: 'status-badge bg-gradient-to-r from-[var(--data-leaf)] to-green-400 text-[var(--dark-purple)] shadow-lg' },
-                    'Not Impacted - Enduring Flow': { label: 'Not Impacted', classes: 'status-badge bg-gradient-to-r from-gray-500 to-gray-600 text-white shadow-lg' },
-                     'MHHS Change (Other)': { label: 'MHHS Change (Other)', classes: 'status-badge bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg' }
-                };
+                    const rowsHtml = block.items.map(itemId => {
+                        const di = state.dataItemsCatalogue[itemId];
+                        if (!di) return '';
+                        return `<tr class="hover:bg-gray-50/50">
+                                    <td class="px-4 py-3 font-mono font-semibold text-xs">${escapeHtml(itemId)}</td>
+                                    <td class="px-4 py-3">${escapeHtml(di.name)}</td>
+                                    <td class="px-4 py-3 font-semibold text-center">${escapeHtml(di.cmo)}</td>
+                                    <td class="px-4 py-3 text-xs opacity-80">${escapeHtml(di.rule)}</td>
+                                </tr>`;
+                    }).join('');
 
-                detailsContent.innerHTML = `
-                    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 mb-6">
-                        <div class="flex-1">
-                            <h2 class="text-3xl lg:text-4xl font-bold text-[var(--dark-purple)] mb-2 leading-tight">${escapeHtml(item.name)}</h2>
-                            <p class="text-lg text-[var(--purple)] opacity-90 font-medium">${escapeHtml(item.id)}</p>
-                        </div>
-                        <span class="text-xs font-semibold px-4 py-2 rounded-xl ${impactInfo[item.impact].classes} whitespace-nowrap">${escapeHtml(impactInfo[item.impact].label)}</span>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100">
-                            <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">Owner</h4>
-                            <p class="font-semibold text-[var(--dark-purple)] text-base">${escapeHtml(item.owner)}</p>
-                        </div>
-                        <div class="bg-gradient-to-br from-[var(--birch)] to-[var(--white)] p-6 rounded-2xl shadow-xl border border-gray-100">
-                            <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">Related MHHS Interface</h4>
-                            <p class="font-semibold text-[var(--dark-purple)] text-base">${escapeHtml(item.related_interface) || 'N/A'}</p>
+                    return headerHtml + `<tbody class="divide-y divide-gray-200/50">${rowsHtml}</tbody>`;
+                }
+                return '';
+             }).join('');
+
+             return `
+                <div class="bg-white/50 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 mt-6 md:mt-8">
+                    <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" /></svg>
+                        Data Items
+                    </h3>
+                    <div class="max-h-[50vh] overflow-y-auto pr-2">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                ${tableContent}
+                            </table>
                         </div>
                     </div>
-                `;
-            };
-
-            searchInput.addEventListener('input', e => {
-                currentSearchTerm = e.target.value;
-                renderList();
-            });
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    currentFilter = button.dataset.filter;
-                    filterButtons.forEach(btn => btn.classList.remove('active-filter'));
-                    button.classList.add('active-filter');
-                    renderList();
-                });
-            });
-            dflowListEl.addEventListener('click', e => {
-                const card = e.target.closest('.dflow-card');
-                if (card) showDetails(card.dataset.id);
-            });
-
-            document.querySelector('#dflow-explorer-content .filter-btn[data-filter="all"]').classList.add('active-filter');
-            renderList();
+                </div>`;
+        }
+        
+        function escapeHtml(text) {
+            if (text === null || typeof text === 'undefined') return '';
+            return text
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
     </script>
 </body>
