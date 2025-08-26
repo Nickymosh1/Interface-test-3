@@ -423,7 +423,7 @@
     "DSCA013": { "description": "Active Power must be provided", "reason": "", "resolution": "" },
     "DSCA014": { "description": "Reactive Power provided but not expected/required", "reason": "", "resolution": "" },
     "DSCA015": { "description": "Supplier Consumption Amendment Reason Code not provided", "reason": "", "resolution": "" },
-    "DSCA999": { "description": "Rejected", "reason": "", "resolution": "" }
+    "DSCA999": { "description": "Rejected", "reason": "", "resolution": "" },
 }
   },
   
