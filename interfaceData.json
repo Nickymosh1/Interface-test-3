@@ -915,6 +915,7 @@
       "description": "Rejected",
       "reason": "",
       "resolution": "The submission was rejected for an unspecified reason. Please review the entire submission for compliance with business rules and data standards."
+  }
   },
   "interfaces": [
     {
