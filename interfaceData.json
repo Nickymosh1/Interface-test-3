@@ -425,7 +425,6 @@
     "DSCA015": { "description": "Supplier Consumption Amendment Reason Code not provided", "reason": "", "resolution": "" },
     "DSCA999": { "description": "Rejected", "reason": "", "resolution": "" }
   },
-  
   "interfaces": [
     {
       "id": "IF-001/PUB-001",
