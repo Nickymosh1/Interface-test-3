@@ -1017,6 +1017,13 @@
       "receiver": "Supplier (SUP)",
       "context": "Registration Service Response to Suppliers initial request to Appoint a Service Provider, either Metering Service or Data Service",
       "supplier_type": "supplier_receive",
+      "rejectionCodeIds": [
+    "REG9008", "REG9007", "REG9009", "REG9004", "REG9005", "REG9006", 
+    "REG0011", "REG1034", "REG1099", "REG1021", "REG0005", "REG0006", 
+    "REG1033", "REG1022", "REG1031", "REG1032", "REG1025", "REG1026", 
+    "REG1095", "REG1090", "REG1091", "REG1092", "REG1098", "REG1036", 
+    "REG1081"
+  ],
       "composition": [
         { "type": "block", "id": "S0_TransactionalInfo" },
         { "type": "header", "title": "S1 - Sender Info (Mandatory)" },
