@@ -1,7 +1,7 @@
 {
   "dataItemsCatalogue": {
     "DI-000": { "name": "Interface Id", "cmo": "M", "rule": "Interface Id" },
-    "DI-001": { "name": "Address Line 1", "cmo": "O", "rule": "A component of a metering point site address...", "example": "Yellow Door" },
+    "DI-001": { "name": "Address Line 1", "cmo": "O", "rule": "A component of a metering point site address. There are defined parts of the address for each address line.", "example": "Yellow Door" },
     "DI-002": { "name": "Address Line 2", "cmo": "O", "rule": "A component of a metering point site address", "example": "Flat 3" },
     "DI-003": { "name": "Address Line 3", "cmo": "O", "rule": "A component of a metering point site address", "example": "Prince of Wales Public House" },
     "DI-004": { "name": "Address Line 4", "cmo": "O", "rule": "A component of a metering point site address", "example": "Short Lane" },
@@ -32,7 +32,7 @@
     "DI-034": { "name": "Energisation Status Effective From Date", "cmo": "M", "rule": "The settlement date and time from which an energisation status is in effect for a metering system.", "example": "2020-02-08T09:30:00+01:00" },
     "DI-035": { "name": "Energy Direction", "cmo": "M", "rule": "Indicates the direction of energy at a metering point. Values can be I = import / E = export.", "populationNotes": "- I Import, - E Export", "example": "I" },
     "DI-036": { "name": "GSP Group ID EffectiveFrom Date", "cmo": "M", "rule": "The date and time from which the GSP Group ID is in effect for the metering system.", "example": "2020-02-08T09:30:00+01:00" },
-    "DI-037": { "name": "GSP Group ID", "cmo": "M", "rule": "Identifies the distinct grid supply point group (physical region of the country) where the metering point is located.", "example": "_A" },
+    "DI-037": { "name": "GSP Group ID", "cmo": "M", "rule": "Identifies the distinct grid supply point group (physical region of the country) where the metering point is located.", "populationNotes": "_A, _B, _C, _D, _E, _F, _G, _H, _J, _K, _L, _M, _N, _P", "example": "_A" },
     "DI-038": { "name": "Associated Import/Export MPAN", "cmo": "M", "rule": "When this metering point is part of an import/export pair, this identifies the related import or export metering point. Where more than one import MPAN exists, this shall be populated with the Primary Import MPAN.", "example": "1200000000000" },
     "DI-039": { "name": "Load Shape GSP Group ID", "cmo": "O", "rule": "The GSP Group ID associated with a Load Shape", "example": "_A" },
     "DI-040": { "name": "Annual Load Shape Total", "cmo": "M", "rule": "Annual consumption associated with a particular Load Shape", "example": "123456789.123" },
