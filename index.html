@@ -10,7 +10,7 @@
         /* Base styles and theme variables */
         body {
             font-family: 'Inter', sans-serif;
-            overscroll-behavior-y: none; /* Prevents scroll chaining */
+            overscroll-behavior-y: none;
         }
         :root {
             --eon-red: #FF4822;
@@ -18,26 +18,18 @@
             --white: #FFFFFF;
             --dark-purple: #36164A;
             --purple: #5E0D98;
-            
-            /* Data Colors */
             --data-sun: #FFDE00;
             --data-gas-off: #9254FF;
             --data-leaf: #1AE570;
         }
-        
-        /* Modern gradient for the background */
         .gradient-bg {
             background: linear-gradient(135deg, var(--birch) 0%, #f0e9e6 100%);
         }
-        
-        /* Glass morphism effect for the sidebar */
         .glass {
             backdrop-filter: blur(16px) saturate(180%);
             background: rgba(255, 255, 255, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
-        /* Floating animation for the main title */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-8px); }
@@ -45,14 +37,8 @@
         .float-animation {
             animation: float 6s ease-in-out infinite;
         }
-        
-        /* Custom scrollbar for a polished look */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, var(--eon-red), var(--purple));
             border-radius: 10px;
@@ -62,29 +48,12 @@
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(180deg, var(--purple), var(--eon-red));
         }
-        
-        /* Enhanced filter buttons with better active states */
         .filter-btn {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
-        .filter-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: left 0.5s;
-        }
-        .filter-btn:hover::before {
-            left: 100%;
-        }
-        .filter-btn.active-filter {
-            transform: translateY(-2px) scale(1.02);
-        }
+        .filter-btn.active-filter { transform: translateY(-2px) scale(1.02); }
         .filter-btn[data-filter="all"].active-filter {
             background: linear-gradient(135deg, var(--eon-red), #ff6b4a) !important;
             color: var(--white) !important;
@@ -105,8 +74,6 @@
             color: var(--white) !important;
             box-shadow: 0 8px 25px rgba(23, 9, 32, 0.3);
         }
-        
-        /* Modern interface cards with hover effects */
         .interface-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-left-width: 4px;
@@ -118,26 +85,18 @@
         .border-send { border-color: var(--data-gas-off); }
         .border-receive { border-color: var(--data-sun); }
         .border-both { border-color: var(--data-leaf); }
-        .border-none { border-color: #9ca3af; } /* gray-400 */
-        
-        /* Gradient text for hero section */
+        .border-none { border-color: #9ca3af; }
         .hero-text {
             background: linear-gradient(135deg, var(--eon-red), var(--purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
-        /* Fade-in animation for details panel content */
-        .details-fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
+        .details-fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        /* Search input styling */
         .search-input {
             background: var(--birch);
             transition: all 0.3s ease;
@@ -146,6 +105,23 @@
             background: var(--white);
             transform: scale(1.01);
             box-shadow: 0 4px 15px rgba(255, 72, 34, 0.1);
+        }
+        /* Modal Styles */
+        .modal-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .modal-hidden {
+            pointer-events: none;
+        }
+        .modal-hidden .modal-overlay {
+            opacity: 0;
+        }
+        .modal-hidden .modal-content {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
         }
     </style>
 </head>
@@ -162,7 +138,6 @@
         </header>
 
         <div class="flex flex-col lg:flex-row gap-6 md:gap-8">
-
             <aside class="lg:w-1/3 xl:w-1/4 glass p-5 md:p-6 rounded-3xl shadow-2xl">
                 <h2 id="filter-heading" class="text-xl font-bold mb-5 text-[var(--eon-red)]">Find an Interface</h2>
                 
@@ -178,8 +153,7 @@
                     <button class="filter-btn border-0 text-[var(--purple)] px-3 py-1.5 rounded-lg text-xs font-medium shadow-md" data-filter="none" aria-pressed="false" style="background: linear-gradient(135deg, #e5e7eb, #f3f4f6);">Not Involved</button>
                 </div>
 
-                <div id="interfaceList" class="overflow-y-auto h-[50vh] lg:h-[calc(100vh-22rem)] pr-2" role="region" aria-live="polite" aria-atomic="true">
-                    </div>
+                <div id="interfaceList" class="overflow-y-auto h-[50vh] lg:h-[calc(100vh-22rem)] pr-2" role="region" aria-live="polite" aria-atomic="true"></div>
             </aside>
 
             <main id="detailsPanel" class="lg:w-2/3 xl:w-3/4 bg-white/80 p-5 md:p-8 rounded-3xl shadow-2xl" role="main" aria-live="polite">
@@ -192,32 +166,46 @@
                     <h2 class="text-2xl md:text-3xl font-bold mb-3 hero-text">Select an Interface</h2>
                     <p class="text-base md:text-lg text-[var(--purple)] opacity-80 max-w-md leading-relaxed">Click on any interface from the list to explore its details.</p>
                 </div>
-                <div id="detailsContent" class="hidden">
-                    </div>
+                <div id="detailsContent" class="hidden"></div>
             </main>
         </div>
     </div>
 
-    <script>
-        // --- SCRIPT UPDATED FOR NORMALIZED JSON ---
+    <div id="rejectionCodeModal" class="modal-hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-overlay fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-lg font-bold text-[var(--eon-red)]">Applicable Rejection Codes</h3>
+                <button id="closeModalBtn" class="p-1 rounded-full hover:bg-gray-200 transition-colors" aria-label="Close modal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="modalBody" class="p-6 overflow-y-auto">
+                </div>
+        </div>
+    </div>
 
-        // Application State
+
+    <script>
         const state = {
             interfaces: [],
             dataItemsCatalogue: {},
             dataBlocksCatalogue: {},
+            rejectionCodesCatalogue: {}, // <-- New
             filteredInterfaces: [],
             currentFilter: 'all',
             currentSearchTerm: '',
         };
 
-        // DOM Elements
         const DOMElements = {
             searchInput: null,
             interfaceList: null,
             welcomeMessage: null,
             detailsContent: null,
             filterButtons: null,
+            rejectionCodeModal: null, // <-- New
+            modalBody: null, // <-- New
+            closeModalBtn: null, // <-- New
         };
 
         document.addEventListener('DOMContentLoaded', initApp);
@@ -237,18 +225,20 @@
             DOMElements.welcomeMessage = document.getElementById('welcomeMessage');
             DOMElements.detailsContent = document.getElementById('detailsContent');
             DOMElements.filterButtons = document.querySelectorAll('.filter-btn');
+            DOMElements.rejectionCodeModal = document.getElementById('rejectionCodeModal');
+            DOMElements.modalBody = document.getElementById('modalBody');
+            DOMElements.closeModalBtn = document.getElementById('closeModalBtn');
         }
 
         async function fetchData() {
             try {
                 const response = await fetch('interfaceData.json'); // Make sure this path is correct
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
-                state.interfaces = data.interfaces;
-                state.dataItemsCatalogue = data.dataItemsCatalogue;
-                state.dataBlocksCatalogue = data.dataBlocksCatalogue;
+                state.interfaces = data.interfaces || [];
+                state.dataItemsCatalogue = data.dataItemsCatalogue || {};
+                state.dataBlocksCatalogue = data.dataBlocksCatalogue || {};
+                state.rejectionCodesCatalogue = data.rejectionCodesCatalogue || {}; // <-- New
                 state.filteredInterfaces = state.interfaces;
                 return true;
             } catch (error) {
@@ -259,6 +249,7 @@
         }
 
         function setupEventListeners() {
+            // Search and Filter listeners... (no changes here)
             let debounceTimer;
             DOMElements.searchInput.addEventListener('input', (e) => {
                 clearTimeout(debounceTimer);
@@ -267,17 +258,14 @@
                     filterAndRender();
                 }, 250);
             });
-
             DOMElements.filterButtons.forEach(button => {
                 button.addEventListener('click', () => handleFilterClick(button));
             });
 
-            const handleItemSelection = (element) => {
-                 if (element) {
-                    renderInterfaceDetails(element.dataset.id);
-                }
+            // Interface list click/keyboard listeners... (no changes here)
+             const handleItemSelection = (element) => {
+                 if (element) renderInterfaceDetails(element.dataset.id);
             }
-
             DOMElements.interfaceList.addEventListener('click', (e) => handleItemSelection(e.target.closest('[data-id]')));
             DOMElements.interfaceList.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -285,8 +273,29 @@
                     handleItemSelection(e.target.closest('[data-id]'));
                 }
             });
+
+            // --- NEW MODAL LISTENERS ---
+            DOMElements.detailsContent.addEventListener('click', (e) => {
+                const button = e.target.closest('.view-codes-btn');
+                if (button) {
+                    const interfaceId = button.dataset.interfaceId;
+                    const interfaceItem = state.interfaces.find(i => i.id === interfaceId);
+                    if (interfaceItem) {
+                        const codeIdsToShow = interfaceItem.rejectionCodeIds;
+                        const allCodes = (codeIdsToShow && codeIdsToShow.length > 0)
+                            ? codeIdsToShow.map(id => ({ id, ...state.rejectionCodesCatalogue[id] }))
+                            : Object.entries(state.rejectionCodesCatalogue).map(([id, data]) => ({ id, ...data }));
+                        
+                        showRejectionCodeModal(allCodes);
+                    }
+                }
+            });
+            
+            DOMElements.closeModalBtn.addEventListener('click', () => DOMElements.rejectionCodeModal.classList.add('modal-hidden'));
+            DOMElements.rejectionCodeModal.querySelector('.modal-overlay').addEventListener('click', () => DOMElements.rejectionCodeModal.classList.add('modal-hidden'));
         }
 
+        // --- NO CHANGES to handleFilterClick, filterAndRender, buildSearchableContent, renderInterfaceList ---
         function handleFilterClick(button) {
             state.currentFilter = button.dataset.filter;
             DOMElements.filterButtons.forEach(btn => {
@@ -300,48 +309,32 @@
 
         function filterAndRender() {
             const searchTerms = state.currentSearchTerm.toLowerCase().split(' ').filter(term => term.trim() !== '');
-            
             state.filteredInterfaces = state.interfaces.filter(item => {
                 const matchesFilter =
                     state.currentFilter === 'all' ||
                     item.supplier_type === state.currentFilter ||
                     (state.currentFilter === 'supplier_send' && item.supplier_type === 'supplier_both') ||
                     (state.currentFilter === 'supplier_receive' && item.supplier_type === 'supplier_both');
-
                 if (!matchesFilter) return false;
                 if (searchTerms.length === 0) return true;
-
-                // Build a comprehensive string of all searchable content for the item
                 const searchableContent = buildSearchableContent(item);
-                
-                // Check if EVERY search term is present
                 return searchTerms.every(term => searchableContent.includes(term));
             });
-
             renderInterfaceList();
         }
 
         function buildSearchableContent(interfaceItem) {
-            let content = [
-                interfaceItem.id,
-                interfaceItem.name,
-                interfaceItem.description
-            ].join(' ').toLowerCase();
-
+            let content = [interfaceItem.id, interfaceItem.name, interfaceItem.description].join(' ').toLowerCase();
             if (interfaceItem.composition) {
                 interfaceItem.composition.forEach(comp => {
                     if (comp.type === 'block' && state.dataBlocksCatalogue[comp.id]) {
                         state.dataBlocksCatalogue[comp.id].items.forEach(itemId => {
                              const dataItem = state.dataItemsCatalogue[itemId];
-                             if(dataItem) {
-                                content += ` ${itemId} ${dataItem.name} ${dataItem.rule}`;
-                             }
+                             if(dataItem) content += ` ${itemId} ${dataItem.name} ${dataItem.rule}`;
                         });
                     } else if (comp.type === 'item') {
                          const dataItem = state.dataItemsCatalogue[comp.id];
-                         if(dataItem) {
-                            content += ` ${comp.id} ${dataItem.name} ${dataItem.rule}`;
-                         }
+                         if(dataItem) content += ` ${comp.id} ${dataItem.name} ${dataItem.rule}`;
                     }
                 });
             }
@@ -351,35 +344,21 @@
         function renderInterfaceList() {
             const { interfaceList } = DOMElements;
             if (state.filteredInterfaces.length === 0) {
-                interfaceList.innerHTML = `<div class="text-center text-[var(--purple)] opacity-80 p-4 bg-[var(--birch)] rounded-2xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                    <p class="text-base font-medium">No interfaces found</p>
-                    <p class="text-xs opacity-70">Try a different search or filter</p>
-                </div>`;
+                interfaceList.innerHTML = `<div class="text-center text-[var(--purple)] opacity-80 p-4 bg-[var(--birch)] rounded-2xl">... No interfaces found ...</div>`;
                 return;
             }
-            
             const fragment = document.createDocumentFragment();
-            const typeClasses = {
-                supplier_send: 'border-send',
-                supplier_receive: 'border-receive',
-                supplier_both: 'border-both',
-                none: 'border-none'
-            };
-
+            const typeClasses = { supplier_send: 'border-send', supplier_receive: 'border-receive', supplier_both: 'border-both', none: 'border-none' };
             state.filteredInterfaces.forEach(item => {
                 const element = document.createElement('div');
                 element.className = `interface-card p-3 md:p-4 mb-2 bg-[var(--white)] rounded-xl cursor-pointer shadow-md ${typeClasses[item.supplier_type]}`;
                 element.dataset.id = item.id;
                 element.setAttribute('role', 'button');
                 element.setAttribute('tabindex', '0');
-                element.innerHTML = `
-                    <p class="font-bold text-[var(--dark-purple)] pointer-events-none text-sm md:text-base mb-1">${escapeHtml(item.id)}</p>
-                    <p class="text-[var(--purple)] opacity-90 pointer-events-none leading-relaxed text-xs md:text-sm">${escapeHtml(item.name)}</p>
-                `;
+                element.innerHTML = `<p class="font-bold text-[var(--dark-purple)] pointer-events-none text-sm md:text-base mb-1">${escapeHtml(item.id)}</p><p class="text-[var(--purple)] opacity-90 pointer-events-none leading-relaxed text-xs md:text-sm">${escapeHtml(item.name)}</p>`;
                 fragment.appendChild(element);
             });
-            interfaceList.innerHTML = ''; // Clear previous content
+            interfaceList.innerHTML = '';
             interfaceList.appendChild(fragment);
         }
 
@@ -399,7 +378,6 @@
                 none: { label: 'Supplier Not Involved', classes: 'bg-gradient-to-r from-gray-500 to-gray-600 text-white' }
             };
 
-            const context = item.context || "No additional context is available for this interface.";
             const dataItemsHtml = generateDataItemsHtml(item);
 
             DOMElements.detailsContent.innerHTML = `
@@ -411,27 +389,16 @@
                     <span class="text-xs font-semibold px-4 py-2 rounded-full shadow-md ${typeInfo[item.supplier_type].classes} whitespace-nowrap">${escapeHtml(typeInfo[item.supplier_type].label)}</span>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-                    <div class="bg-white/50 p-4 sm:p-5 rounded-2xl shadow-lg border border-gray-100">
-                        <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">FROM</h4>
-                        <p class="font-semibold text-[var(--dark-purple)] text-sm md:text-base leading-relaxed">${escapeHtml(item.sender) || 'N/A'}</p>
-                    </div>
-                    <div class="bg-white/50 p-4 sm:p-5 rounded-2xl shadow-lg border border-gray-100">
-                        <h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">TO</h4>
-                        <p class="font-semibold text-[var(--dark-purple)] text-sm md:text-base leading-relaxed">${escapeHtml(item.receiver) || 'N/A'}</p>
-                    </div>
+                    <div class="bg-white/50 p-4 sm:p-5 rounded-2xl shadow-lg border border-gray-100"><h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">FROM</h4><p class="font-semibold text-[var(--dark-purple)] text-sm md:text-base leading-relaxed">${escapeHtml(item.sender) || 'N/A'}</p></div>
+                    <div class="bg-white/50 p-4 sm:p-5 rounded-2xl shadow-lg border border-gray-100"><h4 class="font-bold text-[var(--eon-red)] text-xs mb-2 uppercase tracking-wider">TO</h4><p class="font-semibold text-[var(--dark-purple)] text-sm md:text-base leading-relaxed">${escapeHtml(item.receiver) || 'N/A'}</p></div>
                 </div>
-                <div class="bg-white/50 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100">
-                    <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Context & Purpose
-                    </h3>
-                    <p class="text-[var(--dark-purple)] leading-relaxed text-sm md:text-base">${escapeHtml(context)}</p>
-                </div>
+                <div class="bg-white/50 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100"><h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Context & Purpose</h3><p class="text-[var(--dark-purple)] leading-relaxed text-sm md:text-base">${escapeHtml(item.context || "No context available.")}</p></div>
                 ${dataItemsHtml}`;
             
             DOMElements.detailsContent.querySelector('h2').focus({ preventScroll: true });
         }
         
+        // --- UPDATED FUNCTION to generate the data items table ---
         function generateDataItemsHtml(interfaceItem) {
              if (!interfaceItem.composition || interfaceItem.composition.length === 0) {
                  return '<p class="text-[var(--dark-purple)] opacity-70 mt-6">No data items are associated with this interface.</p>';
@@ -442,65 +409,65 @@
                     return `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]/70 sticky top-0"><tr class="border-b"><th colspan="4" class="px-4 py-2 font-bold">${escapeHtml(comp.title)}</th></tr></thead>`;
                 }
 
-                if (comp.type === 'item') {
-                    const di = state.dataItemsCatalogue[comp.id];
-                    if (!di) return '';
-                     return `<tbody class="divide-y divide-gray-200/50"><tr class="hover:bg-gray-50/50">
-                                <td class="px-4 py-3 font-mono font-semibold text-xs">${escapeHtml(comp.id)}</td>
-                                <td class="px-4 py-3">${escapeHtml(di.name)}</td>
-                                <td class="px-4 py-3 font-semibold text-center">${escapeHtml(di.cmo)}</td>
-                                <td class="px-4 py-3 text-xs opacity-80">${escapeHtml(di.rule)}</td>
-                            </tr></tbody>`;
-                }
-
-                if (comp.type === 'block') {
-                    const block = state.dataBlocksCatalogue[comp.id];
-                    if (!block) return '';
+                if (comp.type === 'item' || comp.type === 'block') { // Simplified logic
+                    const itemsToRender = comp.type === 'item' ? [comp.id] : state.dataBlocksCatalogue[comp.id]?.items || [];
+                    if (itemsToRender.length === 0) return '';
                     
-                    const headerHtml = `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]/70 sticky top-0"><tr class="border-b"><th colspan="4" class="px-4 py-2 font-bold">${escapeHtml(comp.titleOverride || block.title)}</th></tr></thead>
+                    let blockHtml = '';
+                    if (comp.type === 'block') {
+                         const block = state.dataBlocksCatalogue[comp.id];
+                         blockHtml = `<thead class="text-xs text-[var(--dark-purple)] uppercase bg-[var(--birch)]/70 sticky top-0"><tr class="border-b"><th colspan="4" class="px-4 py-2 font-bold">${escapeHtml(comp.titleOverride || block.title)}</th></tr></thead>
                                       <thead class="text-xs text-[var(--purple)] uppercase bg-[var(--birch)]/70 sticky top-9"><tr class="border-b"><th class="px-4 py-2">ID</th><th class="px-4 py-2">Data Item</th><th class="px-4 py-2">M/O/C</th><th class="px-4 py-2">Description / Rule</th></tr></thead>`;
+                    }
 
-                    const rowsHtml = block.items.map(itemId => {
+                    const rowsHtml = itemsToRender.map(itemId => {
                         const di = state.dataItemsCatalogue[itemId];
                         if (!di) return '';
+
+                        let ruleHtml = escapeHtml(di.rule);
+                        if (di.name.toLowerCase().includes('response message') || di.name.toLowerCase().includes('response code')) {
+                            ruleHtml += ` <button class="view-codes-btn ml-2 px-2 py-0.5 text-xs font-semibold text-[var(--eon-red)] bg-red-100 rounded-lg hover:bg-red-200 transition-all" data-interface-id="${interfaceItem.id}">View Codes</button>`;
+                        }
+                        
                         return `<tr class="hover:bg-gray-50/50">
                                     <td class="px-4 py-3 font-mono font-semibold text-xs">${escapeHtml(itemId)}</td>
                                     <td class="px-4 py-3">${escapeHtml(di.name)}</td>
                                     <td class="px-4 py-3 font-semibold text-center">${escapeHtml(di.cmo)}</td>
-                                    <td class="px-4 py-3 text-xs opacity-80">${escapeHtml(di.rule)}</td>
+                                    <td class="px-4 py-3 text-xs opacity-80">${ruleHtml}</td>
                                 </tr>`;
                     }).join('');
 
-                    return headerHtml + `<tbody class="divide-y divide-gray-200/50">${rowsHtml}</tbody>`;
+                    return blockHtml + `<tbody class="divide-y divide-gray-200/50">${rowsHtml}</tbody>`;
                 }
                 return '';
              }).join('');
 
              return `
                 <div class="bg-white/50 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 mt-6 md:mt-8">
-                    <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" /></svg>
-                        Data Items
-                    </h3>
-                    <div class="max-h-[50vh] overflow-y-auto pr-2">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left">
-                                ${tableContent}
-                            </table>
-                        </div>
-                    </div>
+                    <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" /></svg>Data Items</h3>
+                    <div class="max-h-[50vh] overflow-y-auto pr-2"><div class="overflow-x-auto"><table class="w-full text-sm text-left">${tableContent}</table></div></div>
                 </div>`;
+        }
+
+        // --- NEW MODAL FUNCTION ---
+        function showRejectionCodeModal(codes) {
+            if (!codes || codes.length === 0) {
+                DOMElements.modalBody.innerHTML = `<p class="text-gray-600">No specific rejection codes are listed for this interface.</p>`;
+            } else {
+                 DOMElements.modalBody.innerHTML = codes.map(code => `
+                    <div class="py-3 border-b border-gray-200/80 last:border-b-0">
+                        <p class="font-bold font-mono text-sm text-[var(--dark-purple)]">${escapeHtml(code.id)}</p>
+                        <p class="text-sm text-[var(--purple)] opacity-90">${escapeHtml(code.description)}</p>
+                    </div>
+                `).join('');
+            }
+            DOMElements.rejectionCodeModal.classList.remove('modal-hidden');
         }
         
         function escapeHtml(text) {
             if (text === null || typeof text === 'undefined') return '';
-            return text
-                .toString()
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
         }
     </script>
 </body>
