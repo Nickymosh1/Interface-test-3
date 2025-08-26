@@ -408,6 +408,23 @@
     "REG9009": { "description": "MHHS Scenario Codes cannot be used for UnMigrated MPAN", "reason": "", "resolution": "Please add resolution details." },
     "REG9010": { "description": "Cannot Manage MPAN Relationships for an Unmigrated MPAN", "reason": "", "resolution": "Please add resolution details." },
     "REG9011": { "description": "MHHS Registration Standing Data Invalid", "reason": "", "resolution": "Please add resolution details." }
+    "DSCA001": { "description": "Consumption Amendment Period is wholly outside period of responsibility", "reason": "", "resolution": "" },
+    "DSCA002": { "description": "Consumption Amendment Period is partially outside period of responsibility", "reason": "", "resolution": "" },
+    "DSCA003": { "description": "Consumption Amendment Period is wholly outside pre-RF period", "reason": "", "resolution": "" },
+    "DSCA004": { "description": "Consumption Amendment Period is partially outside pre-RF period", "reason": "", "resolution": "" },
+    "DSCA005": { "description": "Provided Gross Consumption is below Consumption Amendment Threshold", "reason": "", "resolution": "" },
+    "DSCA006": { "description": "Apportioned Pre-RF Consumption is below Consumption Amendment Threshold", "reason": "", "resolution": "" },
+    "DSCA007": { "description": "Provided Gross Consumption is outside of agreed Business Rules", "reason": "", "resolution": "" },
+    "DSCA008": { "description": "Apportioned Pre-RF Consumption is outside of agreed Business Rules", "reason": "", "resolution": "" },
+    "DSCA009": { "description": "Supplier Reference expected but not provided", "reason": "", "resolution": "" },
+    "DSCA010": { "description": "Supplier Reference has already been used", "reason": "", "resolution": "" },
+    "DSCA011": { "description": "Reason Code used is invalid/unknown", "reason": "", "resolution": "" },
+    "DSCA012": { "description": "Reason Code used is outside of agreed Business Rules", "reason": "", "resolution": "" },
+    "DSCA013": { "description": "Active Power must be provided", "reason": "", "resolution": "" },
+    "DSCA014": { "description": "Reactive Power provided but not expected/required", "reason": "", "resolution": "" },
+    "DSCA015": { "description": "Supplier Consumption Amendment Reason Code not provided", "reason": "", "resolution": "" },
+    "DSCA999": { "description": "Rejected", "reason": "", "resolution": "" }
+}
   },
   
   "interfaces": [
@@ -957,6 +974,11 @@
       "receiver": "Supplier (SUP)",
       "context": "Response from the Data Service to a Supplier Request Calculate and Submit a Consumption Amendment",
       "supplier_type": "supplier_receive",
+      "rejectionCodeIds": [
+    "DSCA001", "DSCA002", "DSCA003", "DSCA004", "DSCA005", "DSCA006", 
+    "DSCA007", "DSCA008", "DSCA009", "DSCA010", "DSCA011", "DSCA012", 
+    "DSCA013", "DSCA014", "DSCA015", "DSCA999"
+  ],
       "composition": [
         { "type": "block", "id": "S0_TransactionalInfo" },
         { "type": "header", "title": "S1 - Sender Info (Mandatory)" },
