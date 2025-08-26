@@ -407,7 +407,7 @@
     "REG9008": { "description": "MCS/MCA Scenarios cannot be used by a Non-Qualified Supplier", "reason": "", "resolution": "Please add resolution details." },
     "REG9009": { "description": "MHHS Scenario Codes cannot be used for UnMigrated MPAN", "reason": "", "resolution": "Please add resolution details." },
     "REG9010": { "description": "Cannot Manage MPAN Relationships for an Unmigrated MPAN", "reason": "", "resolution": "Please add resolution details." },
-    "REG9011": { "description": "MHHS Registration Standing Data Invalid", "reason": "", "resolution": "Please add resolution details." }
+    "REG9011": { "description": "MHHS Registration Standing Data Invalid", "reason": "", "resolution": "Please add resolution details." },
     "DSCA001": { "description": "Consumption Amendment Period is wholly outside period of responsibility", "reason": "", "resolution": "" },
     "DSCA002": { "description": "Consumption Amendment Period is partially outside period of responsibility", "reason": "", "resolution": "" },
     "DSCA003": { "description": "Consumption Amendment Period is wholly outside pre-RF period", "reason": "", "resolution": "" },
