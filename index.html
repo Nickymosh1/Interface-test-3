@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Base styles and theme variables */
         body { font-family: 'Inter', sans-serif; overscroll-behavior-y: none; }
         :root {
             --eon-red: #FF4822; --birch: #FAF6F4; --white: #FFFFFF; --dark-purple: #36164A;
@@ -109,7 +110,7 @@
 
         async function fetchData() {
             try {
-                const response = await fetch('interfaceData.json');
+                const response = await fetch('interfaceData.json'); // Ensure this file is in the same directory
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
                 Object.assign(state, {
@@ -189,7 +190,7 @@
         function renderInterfaceList() {
             const { interfaceList } = DOMElements;
             if (state.filteredInterfaces.length === 0) {
-                interfaceList.innerHTML = `<div class="text-center text-[var(--purple)] opacity-80 p-4 bg-[var(--birch)] rounded-2xl">... No interfaces found ...</div>`;
+                interfaceList.innerHTML = `<div class="text-center text-[var(--purple)] opacity-80 p-4 bg-[var(--birch)] rounded-2xl"><p class="text-base font-medium">No interfaces found</p><p class="text-xs opacity-70">Try a different search or filter</p></div>`;
                 return;
             }
             const fragment = document.createDocumentFragment();
@@ -224,8 +225,6 @@
             };
 
             const dataItemsHtml = generateDataItemsHtml(item);
-            
-            // Generate rejection codes HTML (will be an empty string if not applicable)
             const rejectionCodesHtml = generateRejectionCodesHtml(item);
 
             DOMElements.detailsContent.innerHTML = `
@@ -264,9 +263,13 @@
                 const rowsHtml = itemsToRender.map(itemId => {
                     const di = state.dataItemsCatalogue[itemId];
                     if (!di) return '';
-                    let ruleHtml = escapeHtml(di.rule);
-                    if (di.populationNotes) ruleHtml += `<div class="mt-2"><b class="text-[var(--dark-purple)]">Notes:</b> <span class="text-[var(--purple)] opacity-90">${escapeHtml(di.populationNotes)}</span></div>`;
-                    if (di.example) ruleHtml += `<div class="mt-1"><b class="text-[var(--dark-purple)]">Example:</b> <code class="text-blue-600 bg-blue-50 p-1 rounded">${escapeHtml(di.example)}</code></div>`;
+                    let ruleHtml = `<div class="mb-2">${escapeHtml(di.rule)}</div>`;
+                    if (di.populationNotes) {
+                        ruleHtml += `<div class="mt-3 pt-2 border-t border-gray-200/80"><h5 class="text-xs font-bold text-[var(--dark-purple)]">Population Notes</h5><p class="text-[var(--purple)] opacity-90">${escapeHtml(di.populationNotes)}</p></div>`;
+                    }
+                    if (di.example) {
+                        ruleHtml += `<div class="mt-3 pt-2 border-t border-gray-200/80"><h5 class="text-xs font-bold text-[var(--dark-purple)]">Example</h5><code class="text-blue-600 bg-blue-50 p-1 rounded-md text-xs">${escapeHtml(di.example)}</code></div>`;
+                    }
                     return `<tr class="hover:bg-gray-50/50"><td class="px-4 py-3 font-mono font-semibold text-xs align-top">${escapeHtml(itemId)}</td><td class="px-4 py-3 align-top">${escapeHtml(di.name)}</td><td class="px-4 py-3 font-semibold text-center align-top">${escapeHtml(di.cmo)}</td><td class="px-4 py-3 text-xs opacity-80 align-top">${ruleHtml}</td></tr>`;
                 }).join('');
                 return blockHtml + `<tbody class="divide-y divide-gray-200/50">${rowsHtml}</tbody>`;
@@ -274,11 +277,8 @@
              return `<div class="bg-white/50 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 mt-6 md:mt-8"><h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" /></svg>Data Items</h3><div class="max-h-[50vh] overflow-y-auto pr-2"><div class="overflow-x-auto"><table class="w-full text-sm text-left">${tableContent}</table></div></div></div>`;
         }
         
-        // --- NEW FUNCTION TO GENERATE THE REJECTION CODES SECTION ---
         function generateRejectionCodesHtml(interfaceItem) {
-            if (!interfaceItem.rejectionCodeIds || interfaceItem.rejectionCodeIds.length === 0) {
-                return ''; // Return an empty string if no codes are defined for this interface
-            }
+            if (!interfaceItem.rejectionCodeIds || interfaceItem.rejectionCodeIds.length === 0) return '';
             const codesHtml = interfaceItem.rejectionCodeIds.map(codeId => {
                 const code = state.rejectionCodesCatalogue[codeId];
                 if (!code) return '';
@@ -287,11 +287,10 @@
                         <p class="font-bold font-mono text-base text-red-800">${escapeHtml(codeId)}</p>
                         <p class="mt-1 text-sm font-semibold text-[var(--dark-purple)]">${escapeHtml(code.description)}</p>
                         ${code.reason ? `<p class="mt-2 text-xs text-gray-700"><b class="font-medium">Why:</b> ${escapeHtml(code.reason)}</p>` : ''}
-                        ${code.resolution ? `<p class="mt-2 text-xs text-green-800"><b class="font-medium text-green-900">How to Fix:</b> ${escapeHtml(code.resolution)}</p>` : ''}
+                        ${code.resolution ? `<p class="mt-2 text-xs text-gray-700"><b class="font-medium text-green-900">How to Fix:</b> ${escapeHtml(code.resolution)}</p>` : ''}
                     </div>
                 `;
             }).join('');
-
             return `
                 <div class="bg-white/50 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 mt-6 md:mt-8">
                     <h3 class="text-xl font-bold text-[var(--eon-red)] mb-4 flex items-center">
